@@ -33,7 +33,7 @@ def check_existing_modules():
 	print("---+-----------")
 	print("   | revision  ")
 	print("---+-----------")
-	for m in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQSTUVWXYZ0123456789":
+	for m in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789":
 		revision = bus.check_for_module(m)
 		if revision is not None:
 			print(" {} | {}".format(m, revision))
