@@ -81,29 +81,30 @@ class Bus(object):
 
 	## checks whether the module with the given id is connected to the bus
 	# \param module_id single-character module id
-	# \returns revision_id (0-255) if present, None otherwise
+	# \returns dict(revision, num_random) if present, None otherwise
 	def check_for_module(self, module_id):
 		Bus._check_module_id(module_id)
 
 		result = self._request(module_id + MODULE_EXISTS)
 		if len(result) == 0:
 			return None
-		return Bus._pick_from_hex(result, [("revision", 1)])["revision"]
+		return Bus._pick_from_hex(result, [("revision", 1), ("num_random",1)])
 
 	## Initialises module for new game
 	# \param module_id single-character module id
 	# \param enabled boolean value which determines whether this module will take part in this game
 	# \param difficulty value from 0-255 (0 being easiest)
-	def init_module(self, module_id, enabled, difficulty):
+	# \param num_random number of random bytes
+	def init_module(self, module_id, enabled, difficulty, num_random):
 		Bus._check_module_id(module_id)
 		assert enabled in [True, False]
 		assert isinstance(difficulty, int)
 		assert 0 <= difficulty <= 255
 
 		mode = 1 if enabled else 0
-		random_number = random.randrange(0, 65536)
+		random_number = "".join(Bus._to_hex(random.randrange(0, 65536),2))
 
-		self._write(module_id + MODULE_INIT + Bus._to_hex(mode, 1) + Bus._to_hex(difficulty, 1) + Bus._to_hex(random_number, 2))
+		self._write(module_id + MODULE_INIT + Bus._to_hex(mode, 1) + Bus._to_hex(difficulty, 1) + random_number)
 
 	## Actually start the game
 	def start_game(self):

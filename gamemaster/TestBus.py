@@ -40,20 +40,20 @@ class TestBus(unittest.TestCase):
 
 	def test_module_existence(self):
 		self.assertEqual(create_bus({}).check_for_module("a"), None)
-		self.assertEqual(create_bus({"aa":"03"}).check_for_module("a"), 3)
+		self.assertEqual(create_bus({"aa":"0302"}).check_for_module("a"), {"revision":3, "num_random":2})
 		self.assertRaises(BusException, create_bus({"aa":"3"}).check_for_module, "a")
 
 	def test_module_init_0(self):
 		serial = FakeSerial()
 		bus = Bus(serial)
-		bus.init_module("a", False, 16)
+		bus.init_module("a", False, 16, 1)
 		self.assertEqual(serial.sendbuf[:6], "ab0010")
 		self.assertEqual(len(serial.sendbuf), 11)
 
 	def test_module_init_1(self):
 		serial = FakeSerial()
 		bus = Bus(serial)
-		bus.init_module("a", True, 16)
+		bus.init_module("a", True, 16, 1)
 		self.assertEqual(serial.sendbuf[:6], "ab0110")
 		self.assertEqual(len(serial.sendbuf), 11)
 

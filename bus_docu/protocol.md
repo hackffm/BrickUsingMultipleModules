@@ -19,6 +19,7 @@
 Parameter: none
 Return:
 * 1 byte module-specific revision number
+* 1 byte number of random bytes requested on gamestart
 
 ### b: Module init
 
@@ -26,7 +27,7 @@ Parameter
 * 1 byte mode:
  * bit 0: is enabled?
 * 1 byte difficulty level (0-255), module specific implementation
-* 2 byte random number seed
+* N bytes random number (according to module description)
 
 Result:
 * Reset logic

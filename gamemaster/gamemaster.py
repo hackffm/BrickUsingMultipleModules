@@ -28,16 +28,16 @@ def check_argument_validity(args):
 		assert len(m) == 1
 
 def check_existing_modules():
-	result = []
+	result = {}
 	print("found the following modules")
 	print("---+-----------")
 	print("   | revision  ")
 	print("---+-----------")
 	for m in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789":
-		revision = bus.check_for_module(m)
-		if revision is not None:
-			print(" {} | {}".format(m, revision))
-			result.append(m)
+		description = bus.check_for_module(m)
+		if description is not None:
+			print(" {} | {}".format(m, description["revision"]))
+			result[m] = description
 	return result
 
 def explode():
@@ -52,7 +52,7 @@ def start(args):
 	used_modules = random.sample(available_modules, args.num_modules)
 
 	for m in modules:
-		bus.init_module(m, m in used_modules, args.difficulty)
+		bus.init_module(m, m in used_modules, args.difficulty, num_random)
 
 	time.sleep(10) # wait for potential hardware reset
 	bus.start_game()
