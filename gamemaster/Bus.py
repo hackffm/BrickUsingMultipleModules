@@ -28,8 +28,12 @@ class Bus(object):
 
 	def _readline(self):
 		result = self.serial.readline().decode()
-		if len(result) > 0 and result[-1] == "\n":
-			result = result[:-1]
+		if len(result) > 0:
+			if result[-1] == "\n":
+				result = result[:-1]
+			if result[0] != "=": # expected return code
+				raise BusException("got response with wrong target ID: '{}'".format(result[0]))
+			result = result[1:]
 		return result
 
 	def _request(self, buf):
