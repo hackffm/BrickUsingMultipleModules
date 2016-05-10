@@ -49,3 +49,8 @@ Return
 Parameter
 * 2 byte: remaining seconds
 * 1 byte: failure counter
+
+### f: Game end
+
+Parameter
+* 1 byte: game result (0: defused, 1: timeout, 2: too many failures)
