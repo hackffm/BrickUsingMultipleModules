@@ -11,8 +11,8 @@
 * Ended with "\n"
 
 ### Module response
-* First byte: "R" (response)
-* random stuff
+* First byte: "=" (response)
+* Return values from slave to master
 
 ### a: Module exists?
 
