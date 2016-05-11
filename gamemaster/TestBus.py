@@ -73,3 +73,9 @@ class TestBus(unittest.TestCase):
 		bus = Bus(serial)
 		bus.broadcast_status(10, 1)
 		self.assertEqual(serial.sendbuf, "_e000A01\n")
+
+	def test_game_end(self):
+		serial = FakeSerial()
+		bus = Bus(serial)
+		bus.end_game(1)
+		self.assertEqual(serial.sendbuf, "_f01\n")

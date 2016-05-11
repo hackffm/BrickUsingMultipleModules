@@ -8,6 +8,7 @@ MODULE_INIT = "b"
 GAME_START = "c"
 STATUS_POLL = "d"
 STATUS_BROADCAST = "e"
+GAME_END = "f"
 
 class BusException(RuntimeError):
 	def __init__(self, text):
@@ -128,3 +129,9 @@ class Bus(object):
 	# \param num_failures number of failures occurred so far
 	def broadcast_status(self, remaining_seconds, num_failures):
 		self._write(BROADCAST_ADDRESS + STATUS_BROADCAST + Bus._to_hex(remaining_seconds, 2) + Bus._to_hex(num_failures, 1))
+	
+	## Game finished (bomb exploded or was successfully defused)
+	# \param result 0 if defused, 1 if countdown reached, 2 if too many failures
+	def end_game(self, result):
+		assert result in [0,1,2]
+		self._write(BROADCAST_ADDRESS + GAME_END + Bus._to_hex(result, 1))

@@ -52,7 +52,7 @@ def start(args):
 	used_modules = random.sample(available_modules, args.num_modules)
 
 	for m in modules:
-		bus.init_module(m, m in used_modules, args.difficulty, num_random)
+		bus.init_module(m, m in used_modules, args.difficulty, args.num_random)
 
 	time.sleep(10) # wait for potential hardware reset
 	bus.start_game()
@@ -71,11 +71,17 @@ def start(args):
 		bus.broadcast_status(time_left, num_failures)
 		print(time_left)
 
-		if time_left <= 0 or num_failures > args.max_errors:
+		if time_left <= 0:
+			bus.end_game(1)
+			explode()
+			break
+		if num_failures > args.max_errors:
+			bus.end_game(2)
 			explode()
 			break
 
 		if defused == args.num_modules:
+			bus.end_game(0)
 			win()
 			break
 
