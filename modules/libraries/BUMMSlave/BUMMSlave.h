@@ -9,28 +9,33 @@ class BUMMSlave
 		// Allmost any character is allowed. 
 		// Folowing character is reserved -> _,\n,=
 		// Don't use!!! 
-		char moduleID; 
+		char _moduleID; 
 		
-		uint8_t[] randomSeeds;
+		uint8_t _randomSeeds[];
 		uint8_t moduleState();
+
+
+
 	public:
 		// constructor
-		BUMMSlave(uint8_t __digitalPin_LEDRed, uint8_t __digitalPin_LEDGreen, uint8_t __digitalPin_busEnable );
+		BUMMSlave(uint8_t digitalPin_LEDRed, uint8_t digitalPin_LEDGreen, uint8_t digitalPin_busEnable );
 		
 		// ------------------------------------
 		// module init setters
-		void setRevisionNumber(uint8_t __revisionNumber);
-		void setModuleID(char __moduleID);
-		void setRequiredRandomSeeds(uint8_t __numRandomSeeds);
+		void setRevisionNumber(uint8_t revisionNumber);
+		void setModuleID(char moduleID);
+		void setRequiredRandomSeeds(uint8_t numRandomSeeds);
 
 		// ------------------------------------
 		// module state properties
 
 		bool isModuleEnabled(); // getter for determine module is enabled
 
-		// setters module arm state
+		/// setters module arm state
 		void disarm();
+		void diarmFail();
 		void arm();
+
 
 		// getters module arm state
 		bool isArmed();
@@ -42,6 +47,7 @@ class BUMMSlave
 		uint16_t getCurrentCountDown();
 		uint8_t getGlobalFailureCount();
 
+		void loop();
 };
 
 #endif
