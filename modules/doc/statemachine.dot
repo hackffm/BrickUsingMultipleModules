@@ -1,0 +1,18 @@
+digraph finite_state_machine {
+#	rankdir=LR;
+	size="8,5"
+
+	node [shape = doublecircle]; poweroff;
+	node [shape = point ]; qi
+
+	node [shape = circle];
+	qi -> poweroff;
+	poweroff  -> "wait for 'a'" [ label = "setup" ];
+	"wait for 'a'" -> disabled [label= "module exists? (master)"];
+	disabled -> initialized [label="moduleInit (master)"];
+	initialized -> armed [label="gameStart (master)"];
+	armed -> disarmed [label="disarm (module logic)"];
+	armed -> disabled [label="gameEnd (master)"];
+	disarmed -> disabled [label="gameEnd (master)"];
+	disarmed -> armed [label="rearm (module logic)"];
+}
