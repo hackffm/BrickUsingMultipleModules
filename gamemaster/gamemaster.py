@@ -45,6 +45,9 @@ def explode():
 def win():
 	print("BOMB HAS BEEN DEFUSED!")
 
+def make_sound(name):
+	pass
+
 def start(args):
 	# check for control panel
 	control_description = bus.check_for_module(Bus.CONTROL_MODULE)
@@ -70,16 +73,31 @@ def start(args):
 	bus.start_game()
 	explosion_time = time.clock() + args.time
 
+	last_time_left = args.time
+	last_num_failures = 0
+
 	while True:
-		total_failures = 0
+		num_failures = 0
 		defused = 0
 		for m in used_modules:
-			success, num_failures = bus.poll_status(m)
-			total_failures += num_failures
+			success, module_failures = bus.poll_status(m)
+			num_failures += module_failures
 			if success:
 				defused += 1
+
 		time_left = int(explosion_time - time.clock())
-		bus.broadcast_status(time_left, num_failures)
+		
+		# make countdown sounds
+		if last_time_left != time_left:
+			if time_left < 20 or time_left % 10 == 0: # make beep every 10s or every second during last 20
+				make_sound("beep")
+
+		if last_time_left != time_left or last_num_failures != num_failures:
+			bus.broadcast_status(time_left, num_failures)
+			last_time_left = time_left
+			last_num_failures = num_failures
+
+
 		print(time_left)
 
 		if time_left <= 0:
