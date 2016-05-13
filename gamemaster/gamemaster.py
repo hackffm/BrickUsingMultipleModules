@@ -52,7 +52,7 @@ def start(args):
 	used_modules = random.sample(available_modules, args.num_modules)
 
 	for m in modules:
-		bus.init_module(m, m in used_modules, args.difficulty, args.num_random)
+		bus.init_module(m, m in used_modules, args.difficulty, modules[m]["num_random"])
 
 	time.sleep(10) # wait for potential hardware reset
 	bus.start_game()
