@@ -2,6 +2,7 @@ import serial
 import random
 
 BROADCAST_ADDRESS = "_"
+CONTROL_MODULE = "!"
 
 MODULE_EXISTS = "a"
 MODULE_INIT = "b"

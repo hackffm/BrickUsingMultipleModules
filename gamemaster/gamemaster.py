@@ -47,16 +47,28 @@ def win():
 	print("BOMB HAS BEEN DEFUSED!")
 
 def start(args):
+	# check for control panel
+	control_description = bus.check_for_module(Bus.CONTROL_MODULE)
+	if control_description is None:
+		raise Exception("no control module found!")
+	bus.init_module(Bus.CONTROL_MODULE, True, args.difficulty, control_description["num_random"])
+
+	# check other modules
 	modules = check_existing_modules()
 	available_modules = [m for m in modules if m not in args.disable.split(",")]
 	used_modules = random.sample(available_modules, args.num_modules)
 
+	# init all normal modules
 	for m in modules:
 		bus.init_module(m, m in used_modules, args.difficulty, modules[m]["num_random"])
 
-	time.sleep(10) # wait for potential hardware reset
-	bus.start_game()
+	# wait for start switch on control panel
+	while(True):
+		continue_waiting, _ = bus.poll_status(Bus.CONTROL_MODULE)
+		if not continue_waiting:
+			break
 
+	bus.start_game()
 	explosion_time = time.clock() + args.time
 
 	while True:
