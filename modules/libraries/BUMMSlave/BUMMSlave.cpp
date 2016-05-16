@@ -45,6 +45,7 @@ BUMMSlave::BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds
 	_moduleID = moduleID;
 	_revisionNumber = revisionNumber;
 	_numRandomSeeds = numRandomSeeds;
+	// TODO initialise randomSeeds
 	_digitalPin_LEDRed = digitalPin_LEDRed;
 	_digitalPin_LEDGreen = digitalPin_LEDGreen;
 	_digitalPin_busEnable = digitalPin_busEnable;
@@ -65,12 +66,14 @@ BUMMSlave::BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds
 void BUMMSlave::disarm()
 {
 	_moduleArmed = false;
+	// TODO set LEDs
 }
 
 void BUMMSlave::disarmFailed()
 {
 	_moduleArmed = true;
 	_failCount++;
+	// TODO set LEDs
 }
 
 uint8_t BUMMSlave::disarmFailCount()
@@ -81,6 +84,7 @@ uint8_t BUMMSlave::disarmFailCount()
 void BUMMSlave::rearm()
 {
 	_moduleArmed = true;
+	// TODO set LEDs
 }
 
 // getters module arm state
