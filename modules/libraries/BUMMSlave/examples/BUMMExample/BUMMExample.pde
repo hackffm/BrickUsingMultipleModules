@@ -1,11 +1,10 @@
 #include <BUMMSlave.h>
 
-BUMMSlave bs(1,2,3);
+BUMMSlave bs('b','a',2,1,2,3);
 
 
 void setup()
 {  
-	bs.setRevisionNumber(8);
 }
 
 void loop()
@@ -20,7 +19,15 @@ void onModuleInit()
 
 void onGameStart() 
 {
+	//
+}
+
+void onGameStatusUpdate()
+{
 
 }
-void onGameStatusUpdate();
-void onGameEnd();
+
+void onGameEnd() 
+{
+
+}
