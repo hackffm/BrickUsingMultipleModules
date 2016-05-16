@@ -20,6 +20,20 @@ class BUMMSlave
 		bool _moduleArmed;
 		uint8_t _failCount;
 		
+		uint8_t _receiveBuffer[32];
+		uint8_t _BytesReceived = 0;
+
+		// bus parsing functions
+		void receive();
+		void parseMessage();
+		uint8_t getBufferByte(uint8_t number);
+		uint16_t getTwoBufferBytes(uint8_t number_of_first_byte);
+		void parseModuleExists();
+		void parseModuleInit();
+		void parseGameStart();
+		void parseStatusPoll();
+		void parseStatusBroadcast();
+		void parseGameEnd();
 	public:
 		uint8_t randomSeeds[];
 		uint8_t difficultyLevel;
