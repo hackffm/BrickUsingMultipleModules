@@ -12,3 +12,15 @@ void loop()
 {  
 	bs.loop();
 }
+
+void onModuleInit()
+{
+	// this function are called if the gamemaster do a init call
+}
+
+void onGameStart() 
+{
+
+}
+void onGameStatusUpdate();
+void onGameEnd();

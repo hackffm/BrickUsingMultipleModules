@@ -1,6 +1,12 @@
 #include <BUMMSlave.h>
 
 
+void onModuleInit();
+void onGameStart();
+void onGameStatusUpdate();
+void onGameEnd();
+
+
 BUMMSlave::BUMMSlave(uint8_t digitalPin_LEDRed, uint8_t digitalPin_LEDGreen, uint8_t digitalPin_busEnable) 
 {
 }
@@ -75,3 +81,5 @@ uint8_t BUMMSlave::getGlobalFailureCount()
 void BUMMSlave::loop()
 {
 }
+
+
