@@ -186,12 +186,24 @@ uint16_t BUMMSlave::getTwoBufferBytes(uint8_t number_of_first_byte)
 	return result;
 }
 
+inline void setSerialOutputEnabled()
+{
+	UCSR1B |= (1<<TXEN0);
+}
+inline void setSerialOutputDisabled()
+{
+	Serial.flush();
+	UCSR0B &= ~(1<<TXEN0);
+}
+
 void BUMMSlave::parseModuleExists()
 {
 	EXPECT_LENGTH(0);
+	setSerialOutputEnabled();
 	Serial.print(RESPONSE_ID);
 	Serial.print(_revisionNumber, HEX);
 	Serial.print(_numRandomSeeds, HEX);
+	setSerialOutputDisabled();
 }
 
 void BUMMSlave::parseModuleInit()
@@ -220,9 +232,11 @@ void BUMMSlave::parseGameStart()
 void BUMMSlave::parseStatusPoll()
 {
 	EXPECT_LENGTH(0);
+	setSerialOutputEnabled();
 	Serial.print(RESPONSE_ID);
 	Serial.print(_moduleArmed ? 0 : 1, HEX);
 	Serial.print(_failCount, HEX);
+	setSerialOutputDisabled();
 }
 
 void BUMMSlave::parseStatusBroadcast()
