@@ -15,6 +15,7 @@ parser.add_argument("difficulty", type=int, help="Difficulty value from 0-255")
 parser.add_argument("time", type=int, help="Number of seconds for the countdown timer")
 parser.add_argument("max_errors", type=int, default=0, help="Maximum errors allowed")
 parser.add_argument("--disable", metavar="module", type=str, nargs="+", default="", help="Disable (don't use) the specified modules")
+parser.add_argument("--ignore-control-module", action="store_true", help="Do not wait for OK from control module. Makes testing easier.")
 main_args = parser.parse_args()
 
 bus = Bus.Bus(main_args.serial_device, BAUDRATE)
@@ -50,10 +51,11 @@ def make_sound(name):
 
 def start(args):
 	# check for control panel
-	control_description = bus.check_for_module(Bus.CONTROL_MODULE)
-	if control_description is None:
-		raise Exception("no control module found!")
-	bus.init_module(Bus.CONTROL_MODULE, True, args.difficulty, control_description["num_random"])
+	if not args.ignore_control_module:
+		control_description = bus.check_for_module(Bus.CONTROL_MODULE)
+		if control_description is None:
+			raise Exception("no control module found!")
+		bus.init_module(Bus.CONTROL_MODULE, True, args.difficulty, control_description["num_random"])
 
 	# check other modules
 	modules = check_existing_modules()
@@ -65,10 +67,14 @@ def start(args):
 		bus.init_module(m, m in used_modules, args.difficulty, modules[m]["num_random"])
 
 	# wait for start switch on control panel
-	while(True):
-		continue_waiting, _ = bus.poll_status(Bus.CONTROL_MODULE)
-		if not continue_waiting:
-			break
+	if not args.ignore_control_module:
+		while(True):
+			continue_waiting, _ = bus.poll_status(Bus.CONTROL_MODULE)
+			if not continue_waiting:
+				break
+	else:
+		print("waiting 5s for game start...")
+		time.sleep(5)
 
 	bus.start_game()
 	explosion_time = time.clock() + args.time
