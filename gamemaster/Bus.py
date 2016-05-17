@@ -104,7 +104,7 @@ class Bus(object):
 		assert 0 <= difficulty <= 255
 
 		mode = 1 if enabled else 0
-		random_number = "".join(Bus._to_hex(random.randrange(0, 65536),2))
+		random_number = "".join(Bus._to_hex(random.randrange(0, 256),1) for i in range(num_random))
 
 		self._write(module_id + MODULE_INIT + Bus._to_hex(mode, 1) + Bus._to_hex(difficulty, 1) + random_number)
 
