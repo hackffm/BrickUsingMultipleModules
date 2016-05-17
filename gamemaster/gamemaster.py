@@ -77,7 +77,7 @@ def start(args):
 		time.sleep(5)
 
 	bus.start_game()
-	explosion_time = time.clock() + args.time
+	explosion_time = time.time() + args.time
 
 	last_time_left = args.time
 	last_num_failures = 0
@@ -91,7 +91,7 @@ def start(args):
 			if success:
 				defused += 1
 
-		time_left = int(explosion_time - time.clock())
+		time_left = int(explosion_time - time.time())
 		
 		# make countdown sounds
 		if last_time_left != time_left:
