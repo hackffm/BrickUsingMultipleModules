@@ -108,6 +108,7 @@ void BUMMSlave::loop()
 	receive();
 }
 
+/// Fills _receiveBuffer with data and calls parseMessage on complete reception
 void BUMMSlave::receive()
 {
 	uint8_t next_char;
@@ -125,6 +126,8 @@ void BUMMSlave::receive()
 		}
 	}
 }
+
+/// Parses the target and command parts of the message and invokes the corresponding handler
 void BUMMSlave::parseMessage()
 {
 	if( (_receiveBuffer[TARGET_BYTE] != _moduleID) && (_receiveBuffer[TARGET_BYTE] != BROADCAST_ID) )
@@ -155,6 +158,9 @@ void BUMMSlave::parseMessage()
 	}
 }
 
+/// Parse a hex-encoded parameter from the message buffer
+// \param number byte-based index of the parameter to parse. 0 corresponds to the first byte in the parameter section
+// \returns the parsed value in a range 0-255
 uint8_t BUMMSlave::getBufferByte(uint8_t number)
 {
 	uint8_t ret = 0;
@@ -163,6 +169,9 @@ uint8_t BUMMSlave::getBufferByte(uint8_t number)
 	ret |= getNibbleFromHex(_receiveBuffer[PARAMETER_START+2*number+2]);
 	return ret;
 }
+
+/// Get two bytes (16 bit) of hex-encoded data from the buffer
+// \param number_of_first_byte byte-based index of the parameter to parse. 0 corresponds to the first two bytes in the parameter section
 uint16_t BUMMSlave::getTwoBufferBytes(uint8_t number_of_first_byte)
 {
 	uint16_t result = 0;
