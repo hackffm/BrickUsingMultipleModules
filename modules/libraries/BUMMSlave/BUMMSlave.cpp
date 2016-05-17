@@ -40,7 +40,7 @@ uint8_t getNibbleFromHex(const char hex)
 }
 
 
-BUMMSlave::BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds, uint8_t digitalPin_LEDRed, uint8_t digitalPin_LEDGreen, uint8_t digitalPin_busEnable )
+BUMMSlave::BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds, uint8_t digitalPin_LEDRed, uint8_t digitalPin_LEDGreen)
 {
 	_moduleID = moduleID;
 	_revisionNumber = revisionNumber;
@@ -48,7 +48,6 @@ BUMMSlave::BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds
 	// TODO initialise randomSeeds
 	_digitalPin_LEDRed = digitalPin_LEDRed;
 	_digitalPin_LEDGreen = digitalPin_LEDGreen;
-	_digitalPin_busEnable = digitalPin_busEnable;
 }
 
 // ----------------------------------------------------------

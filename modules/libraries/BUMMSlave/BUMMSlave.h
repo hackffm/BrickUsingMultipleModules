@@ -14,7 +14,6 @@ class BUMMSlave
 		uint8_t _numRandomSeeds;
 		uint8_t _digitalPin_LEDRed;
 		uint8_t _digitalPin_LEDGreen;
-		uint8_t _digitalPin_busEnable;
 
 		bool _moduleEnabled;
 		bool _moduleArmed;
@@ -41,7 +40,7 @@ class BUMMSlave
 		uint8_t globalFailureCount;
 
 		// constructor
-		BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds, uint8_t digitalPin_LEDRed, uint8_t digitalPin_LEDGreen, uint8_t digitalPin_busEnable );
+		BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds, uint8_t digitalPin_LEDRed, uint8_t digitalPin_LEDGreen);
 		
 		// ------------------------------------
 		// module state properties
