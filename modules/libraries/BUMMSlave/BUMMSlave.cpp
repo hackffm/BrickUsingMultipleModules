@@ -24,17 +24,17 @@ void onGameEnd();
 uint8_t getNibbleFromHex(const char hex)
 {
 	uint8_t ret = 0;
-	if((b >= '0') && (b <= '9'))
+	if((hex >= '0') && (hex <= '9'))
 	{
-		ret = b - '0';
+		ret = hex - '0';
 	}
-	else if((b >= 'a') && (b <= 'f'))
+	else if((hex >= 'a') && (hex <= 'f'))
 	{
-		ret = b - 'a' + 10;
+		ret = hex - 'a' + 10;
 	}
-	else if((b >= 'A') && (b <= 'F'))
+	else if((hex >= 'A') && (hex <= 'F'))
 	{
-		ret = b - 'A' + 10;
+		ret = hex - 'A' + 10;
 	}
 	return ret;
 }
@@ -155,6 +155,7 @@ void BUMMSlave::parseMessage()
 			break;
 		default:
 			// error?
+			break;
 	}
 }
 
@@ -179,8 +180,8 @@ uint16_t BUMMSlave::getTwoBufferBytes(uint8_t number_of_first_byte)
 	uint8_t *end = ptr+4;
 	for(uint8_t *end=ptr+4 ; ptr<end ; ptr++)
 	{
-		ret |= getNibbleFromHex(*ptr);
-		ret <<= 4;
+		result |= getNibbleFromHex(*ptr);
+		result <<= 4;
 	}
 	return result;
 }
@@ -197,13 +198,13 @@ void BUMMSlave::parseModuleInit()
 {
 	EXPECT_LENGTH(2+_numRandomSeeds);
 	
-	uint8_t mode = getBufferByte(0)
+	uint8_t mode = getBufferByte(0);
 	_moduleEnabled = mode & 0x01;
 
-	difficultyLevel = getByteFromHex(1);
+	difficultyLevel = getBufferByte(1);
 
 	for(uint8_t i=0;i<_numRandomSeeds;i++)
-		randomSeeds[i] = getByteFromHex(2+i);
+		randomSeeds[i] = getBufferByte(2+i);
 
 	// TODO reset internal logic (armed, failure counter, ...)
 
