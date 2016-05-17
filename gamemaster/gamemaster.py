@@ -5,7 +5,7 @@ import time
 
 import Bus
 
-BAUDRATE = 38400
+BAUDRATE = 19200
 
 # parse arguments
 parser = argparse.ArgumentParser(description="BUMM Gamemaster")
