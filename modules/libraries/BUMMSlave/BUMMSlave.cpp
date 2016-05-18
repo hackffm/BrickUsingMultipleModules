@@ -49,6 +49,13 @@ uint8_t getNibbleFromHex(const char hex)
 	return ret;
 }
 
+void sendHexByte(uint8_t value)
+{
+	if(value<0x10)
+		Serial.print("0");
+	Serial.print(value, HEX);
+}
+
 
 BUMMSlave::BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds, uint8_t digitalPin_LEDRed, uint8_t digitalPin_LEDGreen)
 {
@@ -58,6 +65,11 @@ BUMMSlave::BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds
 	// TODO initialise randomSeeds
 	_digitalPin_LEDRed = digitalPin_LEDRed;
 	_digitalPin_LEDGreen = digitalPin_LEDGreen;
+	_BytesReceived = 0;
+
+	_moduleStatus = MODULE_STATUS_DISABLED;
+	pinMode(_digitalPin_LEDRed, OUTPUT);
+	pinMode(_digitalPin_LEDGreen, OUTPUT);
 }
 
 // ----------------------------------------------------------
@@ -74,13 +86,15 @@ BUMMSlave::BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds
 /// setters module arm state
 void BUMMSlave::disarm()
 {
-	_moduleArmed = false;
-	// TODO set LEDs
+	if( (_moduleStatus == MODULE_STATUS_ARMED) ||
+	    (_moduleStatus == MODULE_STATUS_DEFUSED) )
+		_moduleStatus = MODULE_STATUS_DEFUSED;
+	else
+		setErrorStatus();
 }
 
 void BUMMSlave::disarmFailed()
 {
-	_moduleArmed = true;
 	_failCount++;
 	// TODO set LEDs
 }
@@ -92,29 +106,38 @@ uint8_t BUMMSlave::disarmFailCount()
 
 void BUMMSlave::rearm()
 {
-	_moduleArmed = true;
 	// TODO set LEDs
+	if( (_moduleStatus == MODULE_STATUS_DEFUSED) ||
+	    (_moduleStatus == MODULE_STATUS_ARMED) )
+		_moduleStatus = MODULE_STATUS_ARMED;
+	else
+		setErrorStatus();
 }
 
 // getters module arm state
 bool BUMMSlave::isModuleEnabled()
 {
-	return _moduleEnabled;
+	return (_moduleStatus == MODULE_STATUS_DEFUSED) || (_moduleStatus == MODULE_STATUS_ARMED) || (_moduleStatus == MODULE_STATUS_INITIALIZED);
 }
 
 bool BUMMSlave::isArmed()
 {
-	return _moduleArmed;
+	return _moduleStatus==MODULE_STATUS_ARMED;
 }
 
 bool BUMMSlave::isDisarmed()
 {
-	return !_moduleArmed;
+	return _moduleStatus==MODULE_STATUS_DEFUSED;
 }
 
 void BUMMSlave::loop()
 {
 	receive();
+}
+
+void BUMMSlave::setErrorStatus()
+{
+	_moduleStatus = MODULE_STATUS_ERROR;
 }
 
 /// Fills _receiveBuffer with data and calls parseMessage on complete reception
@@ -200,8 +223,8 @@ void BUMMSlave::parseModuleExists()
 	EXPECT_LENGTH(0)
 	setSerialOutputEnabled();
 	Serial.print(RESPONSE_ID);
-	Serial.print(_revisionNumber, HEX);
-	Serial.print(_numRandomSeeds, HEX);
+	sendHexByte(_revisionNumber);
+	sendHexByte(_numRandomSeeds);
 	setSerialOutputDisabled();
 }
 
@@ -210,13 +233,19 @@ void BUMMSlave::parseModuleInit()
 	EXPECT_LENGTH(2+_numRandomSeeds)
 	
 	uint8_t mode = getBufferByte(0);
-	_moduleEnabled = mode & 0x01;
-
+	if(_moduleStatus == MODULE_STATUS_DISABLED)
+	{
+		if(mode & 0x01) // enabled
+			_moduleStatus = MODULE_STATUS_INITIALIZED;
+	}
+	else
+		setErrorStatus();
 	difficultyLevel = getBufferByte(1);
 
 	for(uint8_t i=0;i<_numRandomSeeds;i++)
 		randomSeeds[i] = getBufferByte(2+i);
 
+	_failCount = 0;
 	// TODO reset internal logic (armed, failure counter, ...)
 
 	onModuleInit();
@@ -225,6 +254,12 @@ void BUMMSlave::parseModuleInit()
 void BUMMSlave::parseGameStart()
 {
 	EXPECT_LENGTH(0)
+	if(_moduleStatus == MODULE_STATUS_INITIALIZED)
+		_moduleStatus = MODULE_STATUS_ARMED;
+	else if(_moduleStatus == MODULE_STATUS_DISABLED)
+		;
+	else
+		setErrorStatus();
 	onGameStart();
 }
 
@@ -233,8 +268,17 @@ void BUMMSlave::parseStatusPoll()
 	EXPECT_LENGTH(0)
 	setSerialOutputEnabled();
 	Serial.print(RESPONSE_ID);
-	Serial.print(_moduleArmed ? 0 : 1, HEX);
-	Serial.print(_failCount, HEX);
+	if(_moduleStatus == MODULE_STATUS_ARMED)
+		sendHexByte(0);
+	else if(_moduleStatus == MODULE_STATUS_DEFUSED)
+		sendHexByte(1);
+	else
+	{
+		setErrorStatus();
+		setLEDs();
+		sendHexByte(0xff);
+	}
+	sendHexByte(_failCount);
 	setSerialOutputDisabled();
 }
 
@@ -250,5 +294,6 @@ void BUMMSlave::parseGameEnd()
 {
 	EXPECT_LENGTH(1)
 	uint8_t gameEndStatus = getBufferByte(1); // TODO propagate this variable?
+	_moduleStatus = MODULE_STATUS_DISABLED;
 	onGameEnd();
 }

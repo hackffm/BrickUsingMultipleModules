@@ -3,6 +3,12 @@
 
 #include <Arduino.h>
 
+#define MODULE_STATUS_DISABLED 0
+#define MODULE_STATUS_INITIALIZED 1
+#define MODULE_STATUS_ARMED 2
+#define MODULE_STATUS_DEFUSED 3
+#define MODULE_STATUS_ERROR 4
+
 class BUMMSlave
 {
 	private:
@@ -15,12 +21,13 @@ class BUMMSlave
 		uint8_t _digitalPin_LEDRed;
 		uint8_t _digitalPin_LEDGreen;
 
-		bool _moduleEnabled;
-		bool _moduleArmed;
+		uint8_t _moduleStatus;
 		uint8_t _failCount;
 		
 		uint8_t _receiveBuffer[32];
-		uint8_t _BytesReceived = 0;
+		uint8_t _BytesReceived;
+
+		void setErrorStatus();
 
 		// bus parsing functions
 		void receive();
