@@ -27,6 +27,7 @@ class BUMMSlave
 		uint8_t _receiveBuffer[32];
 		uint8_t _BytesReceived;
 
+		void setLEDs();
 		void setErrorStatus();
 
 		// bus parsing functions

@@ -70,6 +70,8 @@ BUMMSlave::BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds
 	_moduleStatus = MODULE_STATUS_DISABLED;
 	pinMode(_digitalPin_LEDRed, OUTPUT);
 	pinMode(_digitalPin_LEDGreen, OUTPUT);
+
+	setLEDs();
 }
 
 // ----------------------------------------------------------
@@ -83,6 +85,33 @@ BUMMSlave::BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds
 // ------------------------------------
 // module state properties
 
+void BUMMSlave::setLEDs()
+{
+	switch(_moduleStatus)
+	{
+		case MODULE_STATUS_DISABLED:
+			digitalWrite(_digitalPin_LEDRed, LOW);
+			digitalWrite(_digitalPin_LEDGreen, LOW);
+			break;
+		case MODULE_STATUS_INITIALIZED:
+			digitalWrite(_digitalPin_LEDRed, LOW);
+			digitalWrite(_digitalPin_LEDGreen, LOW);
+			break;
+		case MODULE_STATUS_ARMED:
+			digitalWrite(_digitalPin_LEDRed, HIGH);
+			digitalWrite(_digitalPin_LEDGreen, LOW);
+			break;
+		case MODULE_STATUS_DEFUSED:
+			digitalWrite(_digitalPin_LEDRed, LOW);
+			digitalWrite(_digitalPin_LEDGreen, HIGH);
+			break;
+		case MODULE_STATUS_ERROR:
+		default:
+			digitalWrite(_digitalPin_LEDRed, HIGH);
+			digitalWrite(_digitalPin_LEDGreen, HIGH);
+			break;
+	}
+}
 /// setters module arm state
 void BUMMSlave::disarm()
 {
@@ -91,11 +120,13 @@ void BUMMSlave::disarm()
 		_moduleStatus = MODULE_STATUS_DEFUSED;
 	else
 		setErrorStatus();
+	setLEDs();
 }
 
 void BUMMSlave::disarmFailed()
 {
 	_failCount++;
+	setLEDs();
 	// TODO set LEDs
 }
 
@@ -106,12 +137,12 @@ uint8_t BUMMSlave::disarmFailCount()
 
 void BUMMSlave::rearm()
 {
-	// TODO set LEDs
 	if( (_moduleStatus == MODULE_STATUS_DEFUSED) ||
 	    (_moduleStatus == MODULE_STATUS_ARMED) )
 		_moduleStatus = MODULE_STATUS_ARMED;
 	else
 		setErrorStatus();
+	setLEDs();
 }
 
 // getters module arm state
@@ -247,6 +278,7 @@ void BUMMSlave::parseModuleInit()
 
 	_failCount = 0;
 	// TODO reset internal logic (armed, failure counter, ...)
+	setLEDs();
 
 	onModuleInit();
 }
@@ -260,6 +292,7 @@ void BUMMSlave::parseGameStart()
 		;
 	else
 		setErrorStatus();
+	setLEDs();
 	onGameStart();
 }
 
@@ -295,5 +328,6 @@ void BUMMSlave::parseGameEnd()
 	EXPECT_LENGTH(1)
 	uint8_t gameEndStatus = getBufferByte(1); // TODO propagate this variable?
 	_moduleStatus = MODULE_STATUS_DISABLED;
+	setLEDs();
 	onGameEnd();
 }
