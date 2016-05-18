@@ -199,7 +199,7 @@ uint8_t BUMMSlave::getBufferByte(uint8_t number)
 	uint8_t ret = 0;
 	ret = getNibbleFromHex(_receiveBuffer[PARAMETER_START+2*number]);
 	ret <<= 4;
-	ret |= getNibbleFromHex(_receiveBuffer[PARAMETER_START+2*number+2]);
+	ret |= getNibbleFromHex(_receiveBuffer[PARAMETER_START+2*number+1]);
 	return ret;
 }
 
