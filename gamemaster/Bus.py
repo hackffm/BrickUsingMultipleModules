@@ -122,6 +122,8 @@ class Bus(object):
 			("success", 1),
 			("failures", 1)
 			])
+		if result["success"] not in [0,1]:
+			raise Exception("state error in module {}".format(module_id))
 
 		return (result["success"] != 0, result["failures"])
 
