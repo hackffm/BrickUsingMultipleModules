@@ -25,8 +25,9 @@ void setSerialOutputEnabled()
 {
 	UCSR0B |= (1<<TXEN0);
 }
-void setSerialOutputDisabled()
+void endSerialCommand()
 {
+	Serial.write('\n');
 	Serial.flush();
 	UCSR0B &= ~(1<<TXEN0);
 }
@@ -72,6 +73,10 @@ BUMMSlave::BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds
 	pinMode(_digitalPin_LEDGreen, OUTPUT);
 
 	setLEDs();
+}
+void BUMMSlave::begin()
+{
+	UCSR0B &= ~(1<<TXEN0);
 }
 
 // ----------------------------------------------------------
@@ -255,7 +260,7 @@ void BUMMSlave::parseModuleExists()
 	Serial.print(RESPONSE_ID);
 	sendHexByte(_revisionNumber);
 	sendHexByte(_numRandomSeeds);
-	setSerialOutputDisabled();
+	endSerialCommand();
 }
 
 void BUMMSlave::parseModuleInit()
@@ -311,7 +316,7 @@ void BUMMSlave::parseStatusPoll()
 		sendHexByte(0xff);
 	}
 	sendHexByte(_failCount);
-	setSerialOutputDisabled();
+	endSerialCommand();
 }
 
 void BUMMSlave::parseStatusBroadcast()

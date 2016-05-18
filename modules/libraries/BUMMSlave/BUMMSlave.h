@@ -51,6 +51,7 @@ class BUMMSlave
 
 		// constructor
 		BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds, uint8_t digitalPin_LEDRed, uint8_t digitalPin_LEDGreen);
+		void begin();
 		
 		// ------------------------------------
 		// module state properties
