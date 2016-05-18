@@ -9,6 +9,8 @@
 #define MODULE_STATUS_DEFUSED 3
 #define MODULE_STATUS_ERROR 4
 
+void setSerialOutputDisabled();
+
 class BUMMSlave
 {
 	private:
