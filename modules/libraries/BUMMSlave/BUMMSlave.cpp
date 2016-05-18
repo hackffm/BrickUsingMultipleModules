@@ -21,6 +21,16 @@ void onGameStart();
 void onGameStatusUpdate();
 void onGameEnd();
 
+void setSerialOutputEnabled()
+{
+	UCSR0B |= (1<<TXEN0);
+}
+void setSerialOutputDisabled()
+{
+	Serial.flush();
+	UCSR0B &= ~(1<<TXEN0);
+}
+
 uint8_t getNibbleFromHex(const char hex)
 {
 	uint8_t ret = 0;
@@ -183,16 +193,6 @@ uint16_t BUMMSlave::getTwoBufferBytes(uint8_t number_of_first_byte)
 		result <<= 4;
 	}
 	return result;
-}
-
-inline void setSerialOutputEnabled()
-{
-	UCSR1B |= (1<<TXEN0);
-}
-inline void setSerialOutputDisabled()
-{
-	Serial.flush();
-	UCSR0B &= ~(1<<TXEN0);
 }
 
 void BUMMSlave::parseModuleExists()
