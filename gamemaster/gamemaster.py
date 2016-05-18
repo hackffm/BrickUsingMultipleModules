@@ -16,9 +16,6 @@ parser.add_argument("time", type=int, help="Number of seconds for the countdown 
 parser.add_argument("max_errors", type=int, default=0, help="Maximum errors allowed")
 parser.add_argument("--disable", metavar="module", type=str, nargs="+", default="", help="Disable (don't use) the specified modules")
 parser.add_argument("--ignore-control-module", action="store_true", help="Do not wait for OK from control module. Makes testing easier.")
-main_args = parser.parse_args()
-
-bus = Bus.Bus(main_args.serial_device, BAUDRATE)
 
 def check_argument_validity(args):
 	assert 0 <= args.difficulty <= 255
@@ -49,7 +46,7 @@ def win():
 def make_sound(name):
 	pass
 
-def start(args):
+def start(args, bus):
 	# check for control panel
 	if not args.ignore_control_module:
 		control_description = bus.check_for_module(Bus.CONTROL_MODULE)
@@ -58,7 +55,7 @@ def start(args):
 		bus.init_module(Bus.CONTROL_MODULE, True, args.difficulty, control_description["num_random"])
 
 	# check other modules
-	modules = check_existing_modules()
+	modules = check_existing_modules(bus)
 	available_modules = [m for m in modules if m not in args.disable.split(",")]
 	used_modules = random.sample(available_modules, args.num_modules)
 
@@ -120,4 +117,12 @@ def start(args):
 			win()
 			break
 
-start(main_args)
+def main():
+	main_args = parser.parse_args()
+
+	bus = Bus.Bus(main_args.serial_device, BAUDRATE)
+	start(main_args, bus)
+
+if __name__=="__main__":
+	main()
+
