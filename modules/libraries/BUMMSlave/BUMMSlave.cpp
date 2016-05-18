@@ -7,7 +7,7 @@
 #define TARGET_BYTE 0
 #define COMMAND_BYTE 1
 #define PARAMETER_START 2
-#define EXPECT_LENGTH(count) if(_BytesReceived != (count+PARAMETER_START) ) return
+#define EXPECT_LENGTH(count) if(_BytesReceived != (2*count+PARAMETER_START) ) {setErrorStatus(); return;}
 
 #define CMD_MODULE_EXISTS 'a'
 #define CMD_MODULE_INIT 'b'
@@ -197,7 +197,7 @@ inline void setSerialOutputDisabled()
 
 void BUMMSlave::parseModuleExists()
 {
-	EXPECT_LENGTH(0);
+	EXPECT_LENGTH(0)
 	setSerialOutputEnabled();
 	Serial.print(RESPONSE_ID);
 	Serial.print(_revisionNumber, HEX);
@@ -207,7 +207,7 @@ void BUMMSlave::parseModuleExists()
 
 void BUMMSlave::parseModuleInit()
 {
-	EXPECT_LENGTH(2+_numRandomSeeds);
+	EXPECT_LENGTH(2+_numRandomSeeds)
 	
 	uint8_t mode = getBufferByte(0);
 	_moduleEnabled = mode & 0x01;
@@ -224,13 +224,13 @@ void BUMMSlave::parseModuleInit()
 
 void BUMMSlave::parseGameStart()
 {
-	EXPECT_LENGTH(0);
+	EXPECT_LENGTH(0)
 	onGameStart();
 }
 
 void BUMMSlave::parseStatusPoll()
 {
-	EXPECT_LENGTH(0);
+	EXPECT_LENGTH(0)
 	setSerialOutputEnabled();
 	Serial.print(RESPONSE_ID);
 	Serial.print(_moduleArmed ? 0 : 1, HEX);
@@ -240,7 +240,7 @@ void BUMMSlave::parseStatusPoll()
 
 void BUMMSlave::parseStatusBroadcast()
 {
-	EXPECT_LENGTH(3);
+	EXPECT_LENGTH(3)
 	currentCountDown = getTwoBufferBytes(0);
 	globalFailureCount = getBufferByte(2);
 	onGameStatusUpdate();
@@ -248,7 +248,7 @@ void BUMMSlave::parseStatusBroadcast()
 
 void BUMMSlave::parseGameEnd()
 {
-	EXPECT_LENGTH(1);
+	EXPECT_LENGTH(1)
 	uint8_t gameEndStatus = getBufferByte(1); // TODO propagate this variable?
 	onGameEnd();
 }
