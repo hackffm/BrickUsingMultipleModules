@@ -135,11 +135,6 @@ void BUMMSlave::disarmFailed()
 	// TODO set LEDs
 }
 
-uint8_t BUMMSlave::disarmFailCount()
-{
-	return _failCount;
-}
-
 void BUMMSlave::rearm()
 {
 	if( (_moduleStatus == MODULE_STATUS_DEFUSED) ||

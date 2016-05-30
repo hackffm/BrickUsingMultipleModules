@@ -67,7 +67,6 @@ class BUMMSlave
 		bool isModuleEnabled();
 		bool isArmed();
 		bool isDisarmed();
-		uint8_t disarmFailCount();
 
 		void loop();
 };
