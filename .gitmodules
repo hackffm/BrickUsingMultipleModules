@@ -1,0 +1,6 @@
+[submodule "modules/libraries/Adafruit_GFX"]
+	path = modules/libraries/Adafruit_GFX
+	url = https://github.com/adafruit/Adafruit-GFX-Library.git
+[submodule "modules/libraries/Adafruit_LEDBackpack"]
+	path = modules/libraries/Adafruit_LEDBackpack
+	url = https://github.com/adafruit/Adafruit_LED_Backpack.git
