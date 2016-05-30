@@ -19,7 +19,7 @@
 void onModuleInit();
 void onGameStart();
 void onGameStatusUpdate();
-void onGameEnd();
+void onGameEnd(uint8_t status);
 
 void setSerialOutputEnabled()
 {
@@ -333,5 +333,5 @@ void BUMMSlave::parseGameEnd()
 	uint8_t gameEndStatus = getBufferByte(1); // TODO propagate this variable?
 	_moduleStatus = MODULE_STATUS_DISABLED;
 	setLEDs();
-	onGameEnd();
+	onGameEnd(gameEndStatus);
 }
