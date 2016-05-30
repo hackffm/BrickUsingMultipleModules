@@ -242,8 +242,8 @@ uint16_t BUMMSlave::getTwoBufferBytes(uint8_t number_of_first_byte)
 	uint8_t *ptr = _receiveBuffer + PARAMETER_START + 2*number_of_first_byte;
 	for(uint8_t *end=ptr+4 ; ptr<end ; ptr++)
 	{
-		result |= getNibbleFromHex(*ptr);
 		result <<= 4;
+		result |= getNibbleFromHex(*ptr);
 	}
 	return result;
 }
