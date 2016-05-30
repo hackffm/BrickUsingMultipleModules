@@ -109,8 +109,9 @@ class Bus(object):
 		self._write(module_id + MODULE_INIT + Bus._to_hex(mode, 1) + Bus._to_hex(difficulty, 1) + random_number)
 
 	## Actually start the game
-	def start_game(self):
-		self._write(BROADCAST_ADDRESS + GAME_START)
+	def start_game(self, module_id):
+		Bus._check_module_id(module_id)
+		self._write(module_id + GAME_START)
 
 	## Poll module status
 	# \param module_id single-character module id

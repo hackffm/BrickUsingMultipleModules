@@ -65,6 +65,7 @@ def start(args, bus):
 
 	# wait for start switch on control panel
 	if not args.ignore_control_module:
+		bus.start_game(Bus.CONTROL_MODULE)
 		while(True):
 			continue_waiting, _ = bus.poll_status(Bus.CONTROL_MODULE)
 			if not continue_waiting:
@@ -72,8 +73,9 @@ def start(args, bus):
 	else:
 		print("waiting 5s for game start...")
 		time.sleep(5)
-
-	bus.start_game()
+	
+	for m in used_modules:
+		bus.start_game(m)
 	explosion_time = time.time() + args.time
 
 	last_time_left = args.time

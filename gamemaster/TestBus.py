@@ -60,8 +60,8 @@ class TestBus(unittest.TestCase):
 	def test_game_start(self):
 		serial = FakeSerial()
 		bus = Bus(serial)
-		bus.start_game()
-		self.assertEqual(serial.sendbuf, "_c\n")
+		bus.start_game("a")
+		self.assertEqual(serial.sendbuf, "ac\n")
 
 	def test_status_poll(self):
 		self.assertEqual(create_bus({"ad":"0000"}).poll_status("a"), (False, 0))
