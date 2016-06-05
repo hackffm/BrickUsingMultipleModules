@@ -76,6 +76,7 @@ BUMMSlave::BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds
 }
 void BUMMSlave::begin()
 {
+	Serial.begin(19200);
 	UCSR0B &= ~(1<<TXEN0);
 }
 

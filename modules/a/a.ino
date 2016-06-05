@@ -10,7 +10,6 @@ void setup()
 	pinMode(PIN_BTN_DISARM, INPUT_PULLUP);
 	pinMode(PIN_BTN_FAIL, INPUT_PULLUP);
 
-	Serial.begin(19200);
 	bs.begin();
 }
 
