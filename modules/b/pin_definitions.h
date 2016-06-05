@@ -1,0 +1,12 @@
+#define PIN_DRV	4
+#define PIN_SET	5
+#define PIN_AVM	6
+#define PIN_DEL	7
+#define PIN_XTR	8
+#define PIN_LVL	9
+#define PIN_VDS	10
+#define PIN_AUX	11
+#define PIN_SRV	12
+#define PIN_DXF	A0
+#define PIN_RTS	A1
+#define PIN_RUN	A2
