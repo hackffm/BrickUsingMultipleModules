@@ -24,7 +24,7 @@ def check_argument_validity(args):
 	for m in args.disable:
 		assert len(m) == 1
 
-def check_existing_modules():
+def check_existing_modules(bus):
 	result = {}
 	print("found the following modules")
 	print("---+-----------")
