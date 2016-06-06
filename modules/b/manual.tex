@@ -1,0 +1,34 @@
+\documentclass[a4paper]{report}
+
+% begin config
+\author{hephaisto}
+\newcommand{\moduleTitle}{Gates}
+\newcommand{\moduleRevision}{1}
+\newcommand{\moduleId}{b}
+% end config
+
+\title{\moduleTitle}
+\input{../common/manual_preamble}
+
+\begin{document}
+
+% begin content
+
+\begin{table}
+	\centering
+	\begin{tabular}{|cc|cc|}\hline
+		IN 1 & IN 2 & NOR & NAND \\\hline\hline
+		0 & 0 & 1 & 1 \\\hline
+		0 & 1 & 0 & 1 \\\hline
+		1 & 0 & 0 & 1 \\\hline
+		1 & 1 & 0 & 0 \\\hline
+	\end{tabular}
+	\caption{Truth table for NAND and NOR gates}
+	\label{tab:b_truthtable}
+\end{table}
+
+\input{manual_figures}
+
+% end content
+
+\end{document}

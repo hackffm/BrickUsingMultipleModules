@@ -176,7 +176,7 @@ def main():
 			gate.put_to_graph(g)
 
 		g.layout(prog='dot')
-		g.draw("wires_{}.svg".format(config_number))
+		g.draw("wires_{}.pdf".format(config_number))
 
 		# generate lookup table
 		table = boolean_table(inputs, outputs)
@@ -287,6 +287,17 @@ def main():
 
 
 		f.write(svg_end)
+	
+	# generate manual figures
+	with open("manual_figures.tex", "w") as f:
+		for i, config in enumerate(configs):
+			f.write(r"""
+			\begin{{figure}}[h]
+				\begin{{center}}
+				\includegraphics[width=\textwidth]{{wires_{i}}}
+				\caption{{Schematic for {title} modules}}
+				\end{{center}}
+			\end{{figure}}""".format(i=i, title=config["title"]))
 
 if __name__ == "__main__":
 	main()
