@@ -26,6 +26,11 @@ Return:
 Parameter
 * 1 byte mode:
  * bit 0: is enabled?
+* 5 bytes serial number, each byte an ascii value for a digit/letter
+ * first two digits are decimal digits. Higher number repesents a higher difficulty and modules should choose difficulty accordingly
+ * the following two digits are decimal digits which just carry some entropy
+ * the last digit should be an uppercase letter
+ * example: "2410H" would be difficulty 24
 * N bytes random number (according to module description)
 
 Result:
@@ -35,13 +40,6 @@ Result:
 
 ### c: Game start (broadcast)
 Enables displays and countdown
-
-Parameters
-* 5 bytes serial number, each byte an ascii value for a digit/letter
-  * first two digits are decimal digits. Higher number repesents a higher difficulty and modules should choose difficulty accordingly
-  * the following two digits are decimal digits which just carry some entropy
-  * the last digit should be an uppercase letter
-  * example: "2410H" would be difficulty 24
 
 ### d: Status poll
 

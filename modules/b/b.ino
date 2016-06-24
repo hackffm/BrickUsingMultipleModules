@@ -11,7 +11,7 @@ void setup()
 	bs.begin();
 }
 
-uint8_t table_number_from_difficulty(uint8_t difficulty)
+uint8_t table_number_from_serial_number(char serialNumber[])
 {
 	return 0; // TODO
 }
@@ -23,7 +23,7 @@ void loop()
 	{
 		if(digitalRead(PIN_RUN) == LOW)
 		{
-			if(input_valid(table_number_from_difficulty(bs.difficultyLevel), bs.randomSeeds[0]))
+			if(input_valid(table_number_from_serial_number(bs.serialNumber), bs.randomSeeds[0]))
 			{
 				bs.disarm();
 			}

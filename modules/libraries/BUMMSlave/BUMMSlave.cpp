@@ -261,7 +261,7 @@ void BUMMSlave::parseModuleExists()
 
 void BUMMSlave::parseModuleInit()
 {
-	EXPECT_LENGTH(2+_numRandomSeeds)
+	EXPECT_LENGTH(1+SERIAL_NUMBER_LENGTH+_numRandomSeeds)
 	
 	uint8_t mode = getBufferByte(0);
 	if(_moduleStatus == MODULE_STATUS_DISABLED)
@@ -271,10 +271,12 @@ void BUMMSlave::parseModuleInit()
 	}
 	else
 		setErrorStatus();
-	difficultyLevel = getBufferByte(1);
+
+	for(uint8_t i=0;i<SERIAL_NUMBER_LENGTH;i++)
+		serialNumber[i] = getBufferByte(1+i);
 
 	for(uint8_t i=0;i<_numRandomSeeds;i++)
-		randomSeeds[i] = getBufferByte(2+i);
+		randomSeeds[i] = getBufferByte(1+SERIAL_NUMBER_LENGTH+i);
 
 	_failCount = 0;
 	// TODO reset internal logic (armed, failure counter, ...)

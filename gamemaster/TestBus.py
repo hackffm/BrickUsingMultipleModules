@@ -46,16 +46,24 @@ class TestBus(unittest.TestCase):
 	def test_module_init_0(self):
 		serial = FakeSerial()
 		bus = Bus(serial)
-		bus.init_module("a", False, 16, 1)
-		self.assertEqual(serial.sendbuf[:6], "ab0010")
-		self.assertEqual(len(serial.sendbuf), 11)
+		bus.init_module("a", False, "1000A", 1)
+		self.assertEqual(serial.sendbuf[:14], "ab003130303041")
+		self.assertEqual(len(serial.sendbuf), 17)
 
 	def test_module_init_1(self):
 		serial = FakeSerial()
 		bus = Bus(serial)
-		bus.init_module("a", True, 16, 1)
-		self.assertEqual(serial.sendbuf[:6], "ab0110")
-		self.assertEqual(len(serial.sendbuf), 11)
+		bus.init_module("a", True, "1000A", 1)
+		self.assertEqual(serial.sendbuf[:14], "ab013130303041")
+		self.assertEqual(len(serial.sendbuf), 17)
+	
+	def test_module_init_2(self):
+		serial = FakeSerial()
+		bus = Bus(serial)
+		self.assertRaises(AssertionError, bus.init_module, "a", True, 16, 1)
+		self.assertRaises(AssertionError, bus.init_module, "a", True, "1000", 1)
+		self.assertRaises(AssertionError, bus.init_module, "a", True, "10000", 1)
+		self.assertRaises(AssertionError, bus.init_module, "a", True, "100A0", 1)
 
 	def test_game_start(self):
 		serial = FakeSerial()

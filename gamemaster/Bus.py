@@ -96,18 +96,24 @@ class Bus(object):
 	## Initialises module for new game
 	# \param module_id single-character module id
 	# \param enabled boolean value which determines whether this module will take part in this game
-	# \param difficulty value from 0-255 (0 being easiest)
+	# \param serial_number 5-char string of bumm serial number
 	# \param num_random number of random bytes
-	def init_module(self, module_id, enabled, difficulty, num_random):
+	def init_module(self, module_id, enabled, serial_number, num_random):
 		Bus._check_module_id(module_id)
 		assert enabled in [True, False]
-		assert isinstance(difficulty, int)
-		assert 0 <= difficulty <= 255
+		assert isinstance(serial_number, str)
+		assert len(serial_number) == 5
+		assert "1" <= serial_number[0] <= "9"
+		assert "0" <= serial_number[1] <= "9"
+		assert "0" <= serial_number[2] <= "9"
+		assert "0" <= serial_number[3] <= "9"
+		assert "A" <= serial_number[4] <= "Z"
 
 		mode = 1 if enabled else 0
 		random_number = "".join(Bus._to_hex(random.randrange(0, 256),1) for i in range(num_random))
+		serial_number_encoded = "".join(Bus._to_hex(ord(s), 1) for s in serial_number)
 
-		self._write(module_id + MODULE_INIT + Bus._to_hex(mode, 1) + Bus._to_hex(difficulty, 1) + random_number)
+		self._write(module_id + MODULE_INIT + Bus._to_hex(mode, 1) + serial_number_encoded + random_number)
 
 	## Actually start the game
 	def start_game(self, module_id):

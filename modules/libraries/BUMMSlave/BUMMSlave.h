@@ -9,6 +9,8 @@
 #define MODULE_STATUS_DEFUSED 3
 #define MODULE_STATUS_ERROR 4
 
+#define SERIAL_NUMBER_LENGTH 5
+
 void setSerialOutputDisabled();
 
 class BUMMSlave
@@ -45,9 +47,9 @@ class BUMMSlave
 		void parseGameEnd();
 	public:
 		uint8_t randomSeeds[];
-		uint8_t difficultyLevel;
 		uint16_t currentCountDown;
 		uint8_t globalFailureCount;
+		char serialNumber[SERIAL_NUMBER_LENGTH];
 
 		// constructor
 		BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds, uint8_t digitalPin_LEDRed, uint8_t digitalPin_LEDGreen);

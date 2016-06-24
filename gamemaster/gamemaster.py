@@ -11,14 +11,14 @@ BAUDRATE = 19200
 parser = argparse.ArgumentParser(description="BUMM Gamemaster")
 parser.add_argument("serial_device", type=str, help="Serial device used for bus communication")
 parser.add_argument("num_modules", type=int, help="Number of active modules")
-parser.add_argument("difficulty", type=int, help="Difficulty value from 0-255")
+parser.add_argument("difficulty", type=int, help="Difficulty value from 10-99")
 parser.add_argument("time", type=int, help="Number of seconds for the countdown timer")
 parser.add_argument("max_errors", type=int, default=0, help="Maximum errors allowed")
 parser.add_argument("--disable", metavar="module", type=str, nargs="+", default="", help="Disable (don't use) the specified modules")
 parser.add_argument("--ignore-control-module", action="store_true", help="Do not wait for OK from control module. Makes testing easier.")
 
 def check_argument_validity(args):
-	assert 0 <= args.difficulty <= 255
+	assert 10 <= args.difficulty <= 99
 	assert args.time > 0
 	assert args.max_errors >= 0
 	for m in args.disable:
@@ -47,12 +47,15 @@ def make_sound(name):
 	pass
 
 def start(args, bus):
+	serial_number = int(args.difficulty) + str(random.randint(0, 99)) + ord(41+random.randint(26))
+	print("serial number: {}".format(serial_number))
+
 	# check for control panel
 	if not args.ignore_control_module:
 		control_description = bus.check_for_module(Bus.CONTROL_MODULE)
 		if control_description is None:
 			raise Exception("no control module found!")
-		bus.init_module(Bus.CONTROL_MODULE, True, args.difficulty, control_description["num_random"])
+		bus.init_module(Bus.CONTROL_MODULE, True, serial_number, control_description["num_random"])
 
 	# check other modules
 	modules = check_existing_modules(bus)
@@ -61,7 +64,7 @@ def start(args, bus):
 
 	# init all normal modules
 	for m in modules:
-		bus.init_module(m, m in used_modules, args.difficulty, modules[m]["num_random"])
+		bus.init_module(m, m in used_modules, serial_number, modules[m]["num_random"])
 
 	# wait for start switch on control panel
 	if not args.ignore_control_module:
