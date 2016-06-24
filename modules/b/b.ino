@@ -13,7 +13,14 @@ void setup()
 
 uint8_t table_number_from_serial_number(char serialNumber[])
 {
-	return 0; // TODO
+	if(serialNumber[0] < 2)
+		return 0;
+	else if(serialNumber[0] < 4)
+		return 1;
+	else if(serialNumber[0] < 6)
+		return 2;
+	else
+		return 3;
 }
 
 void loop()

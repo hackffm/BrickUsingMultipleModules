@@ -96,28 +96,28 @@ configs = [
 	{
 		"num_gates":5,
 		"stretch_factor":2.5,
-		"title":"supereasy",
+		"title":"10xxx-19xxx",
 		"gate_types":[Nor],
 		"random_seed":0
 	},
 	{
 		"num_gates":25,
 		"stretch_factor":2.5,
-		"title":"easy",
+		"title":"20xxx-39xxx",
 		"gate_types":[Nor],
 		"random_seed":3
 	},
 	{
 		"num_gates":40,
 		"stretch_factor":2.0,
-		"title":"medium",
+		"title":"40xxx-59xxx",
 		"gate_types":[Nand],
 		"random_seed":1
 	},
 	{
 		"num_gates":70,
 		"stretch_factor":3.5,
-		"title":"hard",
+		"title":"60xxx and later",
 		"gate_types":[Nor],
 		"random_seed":17
 	}
