@@ -3,6 +3,7 @@ import random
 
 BROADCAST_ADDRESS = "_"
 CONTROL_MODULE = "!"
+RESPONSE_ADDRESS = "="
 
 MODULE_EXISTS = "a"
 MODULE_INIT = "b"
@@ -33,8 +34,8 @@ class Bus(object):
 		if len(result) > 0:
 			if result[-1] == "\n":
 				result = result[:-1]
-			if result[0] != "=": # expected return code
-				raise BusException("got response with wrong target ID: '{}'".format(result[0]))
+			if result[0] != RESPONSE_ADDRESS: # expected return code
+				raise BusException("got response with wrong target ID: '{}' (expected '{}')".format(result[0], RESPONSE_ADDRESS))
 			result = result[1:]
 		return result
 

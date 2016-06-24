@@ -1,5 +1,5 @@
 import unittest
-from Bus import Bus, BusException
+from Bus import Bus, BusException, RESPONSE_ADDRESS
 
 class FakeSerial(object):
 	def __init__(self, responses=None):
@@ -13,7 +13,7 @@ class FakeSerial(object):
 		assert content[-1] == "\n", "'{}'".format(content)
 		content = content[:-1]
 		if content in self.responses:
-			self.recvbuf += self.responses[content]+"\n"
+			self.recvbuf += RESPONSE_ADDRESS + self.responses[content]+"\n"
 
 	def readline(self):
 		return bytes(self.recvbuf, "utf8")
