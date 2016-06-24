@@ -24,7 +24,7 @@ class Gate(object):
 
 		self.children = False
 
-		self.node_kwargs = {}
+		self.node_kwargs = {"fontname":"Courier"}
 
 	def __str__(self):
 		return str(self.number)
