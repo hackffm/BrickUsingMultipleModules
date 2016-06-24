@@ -2,12 +2,24 @@
 #include "autowires.h"
 #include "pin_definitions.h"
 
+uint8_t invert_leds(char* serial_number)
+{{
+{invert_leds}
+	return 0;
+}}
+
+uint8_t invert_switches(char* serial_number)
+{{
+{invert_switches}
+	return 0;
+}}
+
 uint8_t lookuptable[{num_tables}][{num_combinations}]=
 {{
 {lookuptable}
 }};
 
-uint8_t input_valid(uint8_t table_number, uint8_t random_value)
+uint8_t input_valid(uint8_t table_number, uint8_t random_value, char* serial_number)
 {{
 	uint8_t input_value = 0;
 	{pininput}
@@ -19,7 +31,7 @@ void autowires_setup()
 {setup}
 }}
 
-void autowires_setdisplay(uint8_t random_value)
+void autowires_setdisplay(uint8_t random_value, char* serial_number)
 {{
 {setdisplay}
 }};

@@ -14,31 +14,33 @@
 
 % begin content
 
+\input{manual_figures}
+
+
 The Gates-module is an accumulation of multiple logical gates connected to other gates and named signal lines.
 Each gate has two inputs (binary gate), which can have values of TRUE or FALSE.
 Each gate drives all outgoing signal lines to the output value according to the inputs and table \ref{tab:b_truthtable}.
 Some named signal lines are connected to LEDs, enabling the user to see the current state of the line.
 To defuse this module, set all switches so that they have the value of the corresponding signal line, and press RUN.
 
-\warning{BUMMs with serial number of xxxxH/S have inverted LED values!}
+This module is also available with inverted LED values (choose \ledInversionNumbers ) and inverted switch directions (table \ref{tab:b_switch_inversion}).
 
-\warning{Due to manufacturing errors, switches for the series xx4xx-xx7xx have been inserted upside down!}
 
 \begin{table}
 	\centering
 	\begin{tabular}{|ccc|}\hline
 		Signal & LED & Switch \\\hline
-		TRUE & On & Top \\
-		FALSE & Off & Bottom \\\hline
+		TRUE & On & down \\
+		FALSE & Off & up \\\hline
 	\end{tabular}
-	\caption{Logical states corresponding to input and output elements}
+	\caption{Logical states corresponding to input and output elements in default configuration}
 	\label{tab:b_io_logic}
 \end{table}
 
 \begin{table}
 	\centering
 	\begin{tabular}{|cc|cc|}\hline
-		IN 1 & IN 2 & NOR & NAND \\\hline
+		IN 1 & IN 2 & nor & nand \\\hline
 		FALSE & FALSE & TRUE & TRUE \\
 		FALSE & TRUE & FALSE & TRUE \\
 		TRUE & FALSE & FALSE & TRUE \\
@@ -48,7 +50,6 @@ To defuse this module, set all switches so that they have the value of the corre
 	\label{tab:b_truthtable}
 \end{table}
 
-\input{manual_figures}
 
 % end content
 

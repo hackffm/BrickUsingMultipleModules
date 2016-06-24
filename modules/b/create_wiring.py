@@ -123,8 +123,17 @@ configs = [
 	}
 ]
 
+random.seed(0)
+switch_inverts = sorted(random.sample( [str(i)+str(j) for i in range(0,10) for j in range(0,10)] , 30)) # number of inverted switches has to be a multiple of 5!
+led_inverts = sorted(random.sample([chr(0x41+i) for i in range(26)], 5))
+
 input_names = ["DRV", "SET", "AVM", "DEL", "XTR", "LVL", "VDS"]
 output_names = ["AUX", "SRV", "DXF", "RTS"]
+
+template_pininput = """
+	if(digitalRead(PIN_{name}) == HIGH)
+		input_value |= (1<<{bit});
+"""
 
 def main():
 	num_inputs = len(input_names)
@@ -212,10 +221,8 @@ def main():
 		f.write("</body></html>\n")
 
 	# generate cpp file
-	pininput = "\n".join(["""
-	if(digitalRead(PIN_{name}) == HIGH)
-		input_value |= (1<<{bit});
-	""".format(name=name, bit=i) for i, name in enumerate(output_names)])
+	pininput = "\n".join([template_pininput.format(name=name, bit=i) for i, name in enumerate(output_names)])
+	pininput += "\n\tif(invert_switches(serial_number))\n\t\tinput_value ^= 0xFF;\n"
 
 	lookuptable = ",\n".join([
 		"// {}\n{{ ".format(configs[i]["title"])+np.array2string(oi, separator=", ")[1:-1]+"}" # remove [] on the outside
@@ -225,7 +232,12 @@ def main():
 	setup += "\n\n"
 	setup += "\n".join(["""\tpinMode(PIN_{name}, INPUT_PULLUP);""".format(name=name) for name in output_names])
 
-	setdisplay = "\n".join(["""\tdigitalWrite(PIN_{name}, random_value & (1<<{bit}) ? HIGH : LOW);""".format(name=name, bit=i) for i, name in enumerate(input_names)])
+	setdisplay = "\tif(invert_leds(serial_number))\n\t\trandom_value ^= 0xFF;\n\n"
+	setdisplay += "\n".join(["""\tdigitalWrite(PIN_{name}, random_value & (1<<{bit}) ? HIGH : LOW);""".format(name=name, bit=i) for i, name in enumerate(input_names)])
+
+	invert_leds_string = "\n".join(("""\tif(serial_number[4]=="{}") return 1;""".format(l) for l in led_inverts))
+
+	invert_switches_string = "\n".join(("""\tif( (serial_number[2]=="{}") && (serial_number[3]=="{}") ) return 1;""".format(s[0], s[1]) for s in switch_inverts))
 
 	with open("autowires.cpp.in", "r") as f:
 		template = f.read()
@@ -237,6 +249,8 @@ def main():
 			pininput=pininput,
 			setup=setup,
 			setdisplay=setdisplay,
+			invert_switches = invert_switches_string,
+			invert_leds = invert_leds_string,
 			num_tables=len(tables),
 			num_combinations=len(tables[0])))
 
@@ -290,9 +304,33 @@ def main():
 	
 	# generate manual figures
 	with open("manual_figures.tex", "w") as f:
+		invert_switches_table = ""
+		for row in range(len(switch_inverts)//5):
+			for col in range(5):
+				i = col+row*5
+				invert_switches_table += "xx{}x".format(switch_inverts[i])
+				if col < 4:
+					invert_switches_table += " &"
+				else:
+					invert_switches_table += " \\\\"
+
+		f.write(r"""
+		\begin{{table}}[b]
+			\begin{{center}}
+				\begin{{tabular}}{{ccccc}}
+				{}
+				\end{{tabular}}
+			\end{{center}}
+			\caption{{List of serial numbers with inverted switch directions (down=FALSE)}}
+			\label{{tab:b_switch_inversion}}
+		\end{{table}}
+		""".format( invert_switches_table ))
+
+		f.write(r"\newcommand{{\ledInversionNumbers}}{{{}}}".format(", ".join("xxxx"+l for l in led_inverts[:-1]) + " or xxxx" + led_inverts[-1]))
+
 		for i, config in enumerate(configs):
 			f.write(r"""
-			\begin{{figure}}[h]
+			\begin{{figure}}
 				\begin{{center}}
 				\includegraphics[scale=0.4]{{wires_{i}}}
 				\caption{{Internal wiring for series {title}}}
