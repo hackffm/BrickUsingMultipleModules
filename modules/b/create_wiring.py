@@ -294,8 +294,8 @@ def main():
 			f.write(r"""
 			\begin{{figure}}[h]
 				\begin{{center}}
-				\includegraphics[width=\textwidth]{{wires_{i}}}
-				\caption{{Schematic for {title} modules}}
+				\includegraphics[scale=0.4]{{wires_{i}}}
+				\caption{{Internal wiring for series {title}}}
 				\end{{center}}
 			\end{{figure}}""".format(i=i, title=config["title"]))
 
