@@ -10,6 +10,7 @@
 #define MODULE_STATUS_ERROR 4
 
 #define SERIAL_NUMBER_LENGTH 5
+#define RANDOM_NUMBER_MAX_SIZE 16
 
 void setSerialOutputDisabled();
 
@@ -48,7 +49,7 @@ class BUMMSlave
 		void parseStatusBroadcast();
 		void parseGameEnd();
 	public:
-		uint8_t randomSeeds[];
+		uint8_t randomSeeds[RANDOM_NUMBER_MAX_SIZE];
 		uint16_t currentCountDown;
 		uint8_t globalFailureCount;
 		char serialNumber[SERIAL_NUMBER_LENGTH];
