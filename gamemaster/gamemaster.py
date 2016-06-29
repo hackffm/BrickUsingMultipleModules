@@ -47,7 +47,7 @@ def make_sound(name):
 	pass
 
 def start(args, bus):
-	serial_number = int(args.difficulty) + str(random.randint(0, 99)) + ord(41+random.randint(26))
+	serial_number = str(args.difficulty) + str(random.randrange(0, 99)).zfill(2) + chr(0x41+random.randrange(0,26))
 	print("serial number: {}".format(serial_number))
 
 	# check for control panel
