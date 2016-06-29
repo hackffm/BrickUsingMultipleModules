@@ -13,11 +13,11 @@ void setup()
 
 uint8_t table_number_from_serial_number(char serialNumber[])
 {
-	if(serialNumber[0] < 2)
+	if(serialNumber[0] < '2')
 		return 0;
-	else if(serialNumber[0] < 4)
+	else if(serialNumber[0] < '4')
 		return 1;
-	else if(serialNumber[0] < 6)
+	else if(serialNumber[0] < '6')
 		return 2;
 	else
 		return 3;
@@ -48,7 +48,7 @@ void onModuleInit()
 
 void onGameStart()
 {
-	autowires_setdisplay(bs.randomSeeds[0]);
+	autowires_setdisplay(bs.randomSeeds[0], bs.serialNumber);
 }
 
 void onGameStatusUpdate()
