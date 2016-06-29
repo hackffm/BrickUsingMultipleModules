@@ -3,7 +3,7 @@
 #include "pin_definitions.h"
 #include "autowires.h"
 
-BUMMSlave bs('b',0,0,2,3);
+BUMMSlave bs('b',0,1,PIN_STATUS_RED,PIN_STATUS_GREEN);
 
 void setup()
 {
