@@ -127,9 +127,9 @@ def main():
 	setdisplay = "\tif(invert_leds(serial_number))\n\t\trandom_value ^= 0xFF;\n\n"
 	setdisplay += "\n".join(["""\tdigitalWrite(PIN_{name}, random_value & (1<<{bit}) ? HIGH : LOW);""".format(name=name, bit=i) for i, name in enumerate(input_names)])
 
-	invert_leds_string = "\n".join(("""\tif(serial_number[4]=="{}") return 1;""".format(l) for l in led_inverts))
+	invert_leds_string = "\n".join(("""\tif(serial_number[4]=='{}') return 1;""".format(l) for l in led_inverts))
 
-	invert_switches_string = "\n".join(("""\tif( (serial_number[2]=="{}") && (serial_number[3]=="{}") ) return 1;""".format(s[0], s[1]) for s in switch_inverts))
+	invert_switches_string = "\n".join(("""\tif( (serial_number[2]=='{}') && (serial_number[3]=='{}') ) return 1;""".format(s[0], s[1]) for s in switch_inverts))
 
 	random_value_bitmask = 2**num_inputs-1
 
