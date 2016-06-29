@@ -23,7 +23,7 @@ uint8_t input_valid(uint8_t table_number, uint8_t random_value, char* serial_num
 {{
 	uint8_t input_value = 0;
 	{pininput}
-	return lookuptable[table_number][random_value] == input_value;
+	return lookuptable[table_number][random_value & {random_value_bitmask}] == input_value;
 }}
 
 void autowires_setup()
