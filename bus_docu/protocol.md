@@ -45,8 +45,8 @@ Enables displays and countdown
 
 Parameter: none
 Return
-* 1 byte success state (1 if defused, 0 if not defused yet)
-* 1 byte failure counter (gets incremented each failure)
+* 1 byte success state (1 if defused, 0 if not defused yet, all other codes are errorcodes)
+* 1 byte failure counter (gets incremented each failure) OR error code (if success state is > 1)
 
 ### e: Game status broadcast
 

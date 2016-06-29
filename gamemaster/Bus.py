@@ -1,6 +1,8 @@
 import serial
 import random
 
+from parse_errorcode_from_cpp import parse_errorcode_from_cpp
+
 BROADCAST_ADDRESS = "_"
 CONTROL_MODULE = "!"
 RESPONSE_ADDRESS = "="
@@ -131,7 +133,7 @@ class Bus(object):
 			("failures", 1)
 			])
 		if result["success"] not in [0,1]:
-			raise Exception("state error in module {}".format(module_id))
+			raise Exception("state error in module {}: {}".format(module_id, parse_errorcode_from_cpp("../modules/libraries/BUMMSlave/BUMMSlave.cpp", result["success"])))
 
 		return (result["success"] != 0, result["failures"])
 

@@ -26,13 +26,15 @@ class BUMMSlave
 		uint8_t _digitalPin_LEDGreen;
 
 		uint8_t _moduleStatus;
+		uint8_t _errorCode;
+		uint8_t _errorCodeMore;
 		uint8_t _failCount;
 		
 		uint8_t _receiveBuffer[32];
 		uint8_t _BytesReceived;
 
 		void setLEDs();
-		void setErrorStatus();
+		void setErrorStatus(uint8_t errorCode, uint8_t errorCodeMore=0);
 
 		// bus parsing functions
 		void receive();

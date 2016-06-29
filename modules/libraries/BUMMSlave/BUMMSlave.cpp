@@ -7,7 +7,7 @@
 #define TARGET_BYTE 0
 #define COMMAND_BYTE 1
 #define PARAMETER_START 2
-#define EXPECT_LENGTH(count) if(_BytesReceived != (2*count+PARAMETER_START) ) {setErrorStatus(); return;}
+#define EXPECT_LENGTH(count) if(_BytesReceived != (2*(count)+PARAMETER_START) ) {setErrorStatus(ERROR_MESSAGE_LENGTH, count); return;}
 
 #define CMD_MODULE_EXISTS 'a'
 #define CMD_MODULE_INIT 'b'
@@ -15,6 +15,16 @@
 #define CMD_STATUS_POLL 'd'
 #define CMD_STATUS_BROADCAST 'e'
 #define CMD_GAME_END 'f'
+
+// error codes
+#define RETURNCODE_ARMED 0x00
+#define RETURNCODE_DEFUSED 0x01
+#define ERROR_MESSAGE_LENGTH 0x02
+#define ERROR_INITIALISED_WHEN_IN_WRONG_STATE 0x03
+#define ERROR_GAME_START_WHEN_IN_WRONG_STATE 0x04
+#define ERROR_STATUS_POLL_WHEN_IN_WRONG_STATE 0x05
+#define ERROR_DISARM_WHEN_IN_WRONG_STATE 0x06
+#define ERROR_REARM_WHEN_IN_WRONG_STATE 0x06
 
 void onModuleInit();
 void onGameStart();
@@ -67,6 +77,7 @@ BUMMSlave::BUMMSlave(char moduleID, char revisionNumber,  uint8_t numRandomSeeds
 	_digitalPin_LEDRed = digitalPin_LEDRed;
 	_digitalPin_LEDGreen = digitalPin_LEDGreen;
 	_BytesReceived = 0;
+	_errorCode = 0x00;
 
 	_moduleStatus = MODULE_STATUS_DISABLED;
 	pinMode(_digitalPin_LEDRed, OUTPUT);
@@ -125,7 +136,7 @@ void BUMMSlave::disarm()
 	    (_moduleStatus == MODULE_STATUS_DEFUSED) )
 		_moduleStatus = MODULE_STATUS_DEFUSED;
 	else
-		setErrorStatus();
+		setErrorStatus(ERROR_DISARM_WHEN_IN_WRONG_STATE);
 	setLEDs();
 }
 
@@ -142,7 +153,7 @@ void BUMMSlave::rearm()
 	    (_moduleStatus == MODULE_STATUS_ARMED) )
 		_moduleStatus = MODULE_STATUS_ARMED;
 	else
-		setErrorStatus();
+		setErrorStatus(ERROR_REARM_WHEN_IN_WRONG_STATE);
 	setLEDs();
 }
 
@@ -167,9 +178,15 @@ void BUMMSlave::loop()
 	receive();
 }
 
-void BUMMSlave::setErrorStatus()
+void BUMMSlave::setErrorStatus(uint8_t errorCode, uint8_t errorCodeMore)
 {
-	_moduleStatus = MODULE_STATUS_ERROR;
+	if(_moduleStatus != MODULE_STATUS_ERROR)
+	{
+		_moduleStatus = MODULE_STATUS_ERROR;
+		_errorCode = errorCode;
+		_errorCodeMore = errorCodeMore;
+		setLEDs();
+	}
 }
 
 /// Fills _receiveBuffer with data and calls parseMessage on complete reception
@@ -270,7 +287,7 @@ void BUMMSlave::parseModuleInit()
 			_moduleStatus = MODULE_STATUS_INITIALIZED;
 	}
 	else
-		setErrorStatus();
+		setErrorStatus(ERROR_INITIALISED_WHEN_IN_WRONG_STATE);
 
 	for(uint8_t i=0;i<SERIAL_NUMBER_LENGTH;i++)
 		serialNumber[i] = getBufferByte(1+i);
@@ -293,7 +310,7 @@ void BUMMSlave::parseGameStart()
 	else if(_moduleStatus == MODULE_STATUS_DISABLED)
 		;
 	else
-		setErrorStatus();
+		setErrorStatus(ERROR_GAME_START_WHEN_IN_WRONG_STATE);
 	setLEDs();
 	onGameStart();
 }
@@ -304,16 +321,22 @@ void BUMMSlave::parseStatusPoll()
 	setSerialOutputEnabled();
 	Serial.print(RESPONSE_ID);
 	if(_moduleStatus == MODULE_STATUS_ARMED)
-		sendHexByte(0);
+	{
+		sendHexByte(RETURNCODE_ARMED);
+		sendHexByte(_failCount);
+	}
 	else if(_moduleStatus == MODULE_STATUS_DEFUSED)
-		sendHexByte(1);
+	{
+		sendHexByte(RETURNCODE_DEFUSED);
+		sendHexByte(_failCount);
+	}
 	else
 	{
-		setErrorStatus();
+		setErrorStatus(ERROR_STATUS_POLL_WHEN_IN_WRONG_STATE);
 		setLEDs();
-		sendHexByte(0xff);
+		sendHexByte(_errorCode);
+		sendHexByte(_errorCodeMore);
 	}
-	sendHexByte(_failCount);
 	endSerialCommand();
 }
 
