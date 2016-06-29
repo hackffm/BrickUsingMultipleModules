@@ -13,13 +13,13 @@ def boolean_table(inputs, outputs):
 	table = np.empty((2**len(inputs), len(inputs)+len(outputs),), dtype=np.bool)
 	mesh = np.array(np.meshgrid(*[[False, True] for i in range(len(inputs))], indexing="ij"))
 	mesh.shape = len(inputs), 2**len(inputs)
-	mesh = mesh.T
+	mesh = mesh.T[:,::-1]
 
 	for i in range(2**len(inputs)):
 		table[i, :len(inputs)] = mesh[i]
-		input_values = {input_names[k]:table[i, k] for k in range(len(inputs))}
+		input_values = {input_names[-k-1]:table[i, k] for k in range(len(inputs))}
 		for j, o in enumerate(outputs):
-			table[i, j+len(inputs)] = o.get_value(input_values)
+			table[i, -j-1] = o.get_value(input_values)
 	return table
 
 template_pininput = """
@@ -84,7 +84,7 @@ def main():
 		tables.append(table)
 		output_table = table[:, len(inputs):]
 
-		output_integers.append(np.sum(np.power(2, np.arange(num_outputs))[None, :] * output_table, axis=1))
+		output_integers.append(np.sum(np.power(2, np.arange(num_outputs))[None, ::-1] * output_table, axis=1))
 
 		for i in range(num_outputs):
 			print("output {}: {} probability to be True".format(i, np.sum( output_table[:, i]) / (2**num_inputs) ))
@@ -100,7 +100,7 @@ def main():
 			f.write("""<table cellborder="1">\n<thead><tr>""")
 			for i in input_names:
 				f.write("<td>{}</td>".format(i))
-			for o in output_names:
+			for o in reversed(output_names):
 				f.write("<td>{}</td>".format(o))
 			f.write("</tr></thead>\n")
 			for row in table:
