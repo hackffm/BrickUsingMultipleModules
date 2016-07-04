@@ -4,6 +4,7 @@ plate_width = 100.0
 plate_height = plate_width
 hole_distance = -6.0
 plate_padding = 5.0
+corner_cut = 1.0
 
 total_width = plate_width + plate_padding
 total_height = plate_height + plate_padding
@@ -36,13 +37,18 @@ def make_top_plate(position_flags):
 			raise Exception("position {} not found! Possible values: {}".format(posname, " ".join(positions.keys())))
 		svg_code += """<circle style="{}" cx="{}" cy="{}" r="{}"/>\n""".format(styles["cut"], position[0], position[1], radius_m4)
 	p = plate_padding
-	svg_code += """<path style="{}" d="M {} {} L {} {} L {} {} L {} {} L {} {}" />""".format(styles["cut"],
-			-p, -p,
-			plate_width+p, -p,
-			plate_width+p, plate_height+p,
-			-p, plate_height+p,
-			-p, -p
-			)
+	c = corner_cut
+	points = [
+		(-p, -p+c),
+		(-p+c, -p),
+		(plate_width+p-c, -p),
+		(plate_width+p, -p+c),
+		(plate_width+p, plate_height+p-c),
+		(plate_width+p-c, plate_height+p),
+		(-p+c, plate_height+p),
+		(-p, plate_height+p-c),
+	]
+	svg_code += """<path style="{}" d="M {} L {} z" />""".format(styles["cut"], "{} {}".format(*points[0]), " ".join(("{} {}".format(*p) for p in points[1:])))
 	return svg_code
 
 if __name__ == "__main__":
