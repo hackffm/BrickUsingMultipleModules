@@ -92,7 +92,7 @@ def main():
 		Gate.all_gates = []
 
 	# generate cheatsheet
-	with open("cheatsheet.html","w") as f:
+	with open("cheatsheet_autogen.html","w") as f:
 		f.write("""<html>\n<head><title>Module: Gates - Cheatsheet</title></head>\n<body>\n""")
 		for i, table in enumerate(tables):
 			f.write("""<div style="position:absolute;width:{}%;left:{}%;">\n""".format(100//len(tables), 100//len(tables)*i))
@@ -136,7 +136,7 @@ def main():
 	with open("autowires.cpp.in", "r") as f:
 		template = f.read()
 
-	with open("autowires.cpp","w") as f:
+	with open("wires_autogen.cpp","w") as f:
 		f.write("// This file has been generated automatically! Do not modify!\n")
 		f.write(template.format(
 			lookuptable=lookuptable,
@@ -150,12 +150,9 @@ def main():
 			num_combinations=len(tables[0])))
 
 	# generate panel svg
-	with open("panel.svg", "w") as f:
-		cut = "fill:none;stroke:#FF0000;stroke-width:0.1mm"
-		engrave = "fill:#00FF00"
-		led_radius = 2.5
-		switch_radius = 3.0
-		button_radius = 4.0
+	with open("panel_autogen.svg", "w") as f:
+		cut = laser_config.styles["cut"]
+		engrave = laser_config.styles["engrave"]
 
 		circle = """<circle style="{style}" cx="{}" cy="{}" r="{}"/>\n"""
 		svg_start = """<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="{width}{units}" height="{height}{units}" viewBox="{viewBox}" id="{id}" version="1.1">\n""".format(
@@ -198,7 +195,7 @@ def main():
 		f.write(svg_end)
 	
 	# generate manual figures
-	with open("manual_figures.tex", "w") as f:
+	with open("manual_figures_autogen.tex", "w") as f:
 		invert_switches_table = ""
 		for row in range(len(switch_inverts)//5):
 			for col in range(5):
