@@ -28,11 +28,11 @@ class Bus(object):
 			self.serial = serial.Serial(device, baudrate, timeout=0.1)
 
 	def _write(self, buf):
-		self.serial.write(bytes(buf+"\n", "utf8"))
+		self.serial.write(buf+"\n")
 		self.serial.flush()
 
 	def _readline(self):
-		result = self.serial.readline().decode()
+		result = self.serial.readline()
 		if len(result) > 0:
 			if result[-1] == "\n":
 				result = result[:-1]
