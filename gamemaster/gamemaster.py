@@ -4,6 +4,7 @@ import random
 import time
 
 import Bus
+from Sound import SoundManager
 
 BAUDRATE = 19200
 
@@ -16,6 +17,14 @@ parser.add_argument("time", type=int, help="Number of seconds for the countdown 
 parser.add_argument("max_errors", type=int, default=0, help="Maximum errors allowed")
 parser.add_argument("--disable", metavar="module", type=str, nargs="+", default="", help="Disable (don't use) the specified modules")
 parser.add_argument("--ignore-control-module", action="store_true", help="Do not wait for OK from control module. Makes testing easier.")
+
+def linspace(start, stop, step):
+	return list(i*step for i in range( int(start/step), int(stop/step) ) )
+
+def make_beep_times(fulltime):
+	result = ( linspace(0, 5, 0.2) + linspace(5, 10, 0.5) + linspace(10, 20, 1) + linspace(20, fulltime, 5) )[::-1]
+	print(result)
+	return result
 
 def check_argument_validity(args):
 	assert 10 <= args.difficulty <= 99
@@ -43,10 +52,9 @@ def explode():
 def win():
 	print("BOMB HAS BEEN DEFUSED!")
 
-def make_sound(name):
-	pass
 
 def start(args, bus):
+	sound = SoundManager({"beep":"beep_short.wav", "beep_end": "beep_end.wav"})
 	serial_number = str(args.difficulty) + str(random.randrange(0, 99)).zfill(2) + chr(0x41+random.randrange(0,26))
 	print("serial number: {}".format(serial_number))
 
@@ -80,6 +88,8 @@ def start(args, bus):
 	for m in used_modules:
 		bus.start_game(m)
 	explosion_time = time.time() + args.time
+	beeptimes = make_beep_times(args.time)
+	next_beep_index = 0
 
 	last_time_left = args.time
 	last_num_failures = 0
@@ -92,13 +102,15 @@ def start(args, bus):
 			num_failures += module_failures
 			if success:
 				defused += 1
-
-		time_left = int(explosion_time - time.time())
 		
 		# make countdown sounds
-		if last_time_left != time_left:
-			if time_left < 20 or time_left % 10 == 0: # make beep every 10s or every second during last 20
-				make_sound("beep")
+		if ( explosion_time - time.time() ) < sound["beep_end"].get_length():
+			sound["beep_end"].play()
+		elif ( explosion_time - time.time() ) < beeptimes[next_beep_index]:
+			next_beep_index += 1
+			sound["beep"].play()
+
+		time_left = int(explosion_time - time.time())
 
 		if last_time_left != time_left or last_num_failures != num_failures:
 			bus.broadcast_status(time_left, num_failures)
