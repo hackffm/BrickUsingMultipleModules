@@ -2,7 +2,6 @@
 import sys
 import random
 import pickle
-import pygraphviz as pgv
 import numpy as np
 
 from common import *
@@ -38,13 +37,6 @@ def main():
 	for config_number, config in enumerate(configs):
 		gates = gates_per_config[config_number]
 		outputs = gates[-len(output_names):]
-		# generate graph output
-		g = pgv.AGraph(directed=True)
-		for gate in gates:
-			gate.put_to_graph(g)
-
-		g.layout(prog='dot')
-		g.draw("wires_{}.pdf".format(config_number))
 
 		# generate lookup table
 		table = boolean_table(len(input_names), outputs)
