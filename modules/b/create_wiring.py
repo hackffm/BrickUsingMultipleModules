@@ -37,7 +37,6 @@ def main():
 	for config_number, config in enumerate(configs):
 		random.seed(config["random_seed"])
 
-		g=pgv.AGraph(directed=True)
 
 		num_gates = config["num_gates"]
 		stretch_factor = config["stretch_factor"]
@@ -73,6 +72,7 @@ def main():
 				continue_pruning = True
 
 		# generate graph output
+		g = pgv.AGraph(directed=True)
 		for gate in Gate.all_gates:
 			gate.put_to_graph(g)
 
