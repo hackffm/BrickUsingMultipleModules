@@ -1,5 +1,7 @@
 import random
 
+GATE_FILE = "gates_autogen.dat"
+
 class Gate(object):
 	running_number = 0
 	all_gates = []

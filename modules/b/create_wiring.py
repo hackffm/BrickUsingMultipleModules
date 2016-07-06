@@ -77,7 +77,12 @@ def main():
 				continue_pruning = True
 
 		gates_per_config.append(gates)
-
+	
+	with open(GATE_FILE, "wb") as f:
+		pickle.dump(gates_per_config, f)
+	
+	with open(GATE_FILE, "rb") as f:
+		gates_per_config = pickle.load(f)
 	for config_number, config in enumerate(configs):
 		gates = gates_per_config[config_number]
 		outputs = gates[-len(output_names):]
