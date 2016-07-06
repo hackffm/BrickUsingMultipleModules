@@ -41,38 +41,43 @@ def main():
 		stretch_factor = config["stretch_factor"]
 
 		inputs = []
+		intermediate_gates = []
 		outputs = []
+		gates = []
 
 		for i in range(num_inputs):
 			inputs.append(In(input_names[i]))
+		gates += inputs
 
 		for i in range(num_gates):
 			gate_type = random.choice(config["gate_types"])
-			gate = gate_type(*random.sample(Gate.all_gates[-int(num_inputs*stretch_factor):], 2))
+			gate = gate_type(*random.sample(gates[-int(num_inputs*stretch_factor):], 2))
+			intermediate_gates.append(gate)
+			gates.append(gate)
 
-		gates = Gate.all_gates[num_inputs:]
 
 		for i in range(num_outputs):
-			outputs.append(Out(output_names[i], gates[-(i+1)]))
+			outputs.append(Out(output_names[i], intermediate_gates[-(i+1)]))
+		gates += outputs
 
 		# prune graph
 		continue_pruning = True
 		while(continue_pruning):
 			continue_pruning = False
-			for gate in Gate.all_gates:
+			for gate in gates:
 				gate.has_children = gate in outputs
 
-			for gate in Gate.all_gates:
+			for gate in gates:
 				for parent in gate.inputs:
 					parent.has_children = True
-			rest = [gate for gate in Gate.all_gates if gate.has_children]
-			if len(rest) < len(Gate.all_gates):
-				Gate.all_gates[:] = rest
+			rest = [gate for gate in gates if gate.has_children]
+			if len(rest) < len(gates):
+				gates[:] = rest
 				continue_pruning = True
 
 		# generate graph output
 		g = pgv.AGraph(directed=True)
-		for gate in Gate.all_gates:
+		for gate in gates:
 			gate.put_to_graph(g)
 
 		g.layout(prog='dot')
@@ -84,8 +89,6 @@ def main():
 
 		for i in range(num_outputs):
 			print("output {}: {} probability to be True".format(i, np.sum( table[:, len(inputs)+i]) / (2**num_inputs) ))
-
-		Gate.all_gates = []
 
 	# generate cheatsheet
 	with open("cheatsheet_autogen.html","w") as f:
