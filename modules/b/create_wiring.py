@@ -9,15 +9,15 @@ from common import *
 def get_output(input_values, outputs):
 	return {output.label: output.get_value(input_values) for output in outputs}
 
-def boolean_table(inputs, outputs):
-	table = np.empty((2**len(inputs), len(inputs)+len(outputs),), dtype=np.bool)
-	mesh = np.array(np.meshgrid(*[[False, True] for i in range(len(inputs))], indexing="ij"))
-	mesh.shape = len(inputs), 2**len(inputs)
+def boolean_table(num_inputs, outputs):
+	table = np.empty((2**num_inputs, num_inputs+len(outputs),), dtype=np.bool)
+	mesh = np.array(np.meshgrid(*[[False, True] for i in range(num_inputs)], indexing="ij"))
+	mesh.shape = num_inputs, 2**num_inputs
 	mesh = mesh.T[:,::-1]
 
-	for i in range(2**len(inputs)):
-		table[i, :len(inputs)] = mesh[i]
-		input_values = {input_names[-k-1]:table[i, k] for k in range(len(inputs))}
+	for i in range(2**num_inputs):
+		table[i, :num_inputs] = mesh[i]
+		input_values = {input_names[-k-1]:table[i, k] for k in range(num_inputs)}
 		for j, o in enumerate(outputs):
 			table[i, -j-1] = o.get_value(input_values)
 	return table
@@ -84,7 +84,7 @@ def main():
 		g.draw("wires_{}.pdf".format(config_number))
 
 		# generate lookup table
-		table = boolean_table(inputs, outputs)
+		table = boolean_table(len(input_names), outputs)
 		tables.append(table)
 
 		for i in range(num_outputs):
