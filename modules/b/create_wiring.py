@@ -52,7 +52,13 @@ def main():
 
 		for i in range(num_outputs):
 			print("output {}: {} probability to be True".format(i, np.sum( table[:, num_inputs+i]) / (2**num_inputs) ))
+	
+	np.save(TABLE_FILE, tables)
 
+def main2():
+	num_inputs = len(input_names)
+	num_outputs = len(output_names)
+	tables = np.load(TABLE_FILE)
 	# generate cheatsheet
 	with open("cheatsheet_autogen.html","w") as f:
 		f.write("""<html>\n<head><title>Module: Gates - Cheatsheet</title></head>\n<body>\n""")
@@ -113,4 +119,4 @@ def main():
 
 if __name__ == "__main__":
 	main()
-
+	main2()

@@ -1,6 +1,7 @@
 import random
 
 GATE_FILE = "gates_autogen.dat"
+TABLE_FILE = "lookuptable_autogen.npy"
 
 class Gate(object):
 	running_number = 0
