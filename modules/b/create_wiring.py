@@ -99,7 +99,7 @@ def main():
 		tables.append(table)
 
 		for i in range(num_outputs):
-			print("output {}: {} probability to be True".format(i, np.sum( table[:, len(inputs)+i]) / (2**num_inputs) ))
+			print("output {}: {} probability to be True".format(i, np.sum( table[:, num_inputs+i]) / (2**num_inputs) ))
 
 	# generate cheatsheet
 	with open("cheatsheet_autogen.html","w") as f:
@@ -127,7 +127,7 @@ def main():
 	pininput += "\n\tif(invert_switches(serial_number))\n\t\tinput_value ^= {};\n".format(2**num_outputs-1)
 
 	lookuptable = ",\n".join([
-		"// {}\n{{ ".format(configs[i]["title"])+np.array2string(np.sum(np.power(2, np.arange(num_outputs))[None, ::-1] * table[:, len(inputs):], axis=1), separator=", ")[1:-1]+"}" # remove [] on the outside
+		"// {}\n{{ ".format(configs[i]["title"])+np.array2string(np.sum(np.power(2, np.arange(num_outputs))[None, ::-1] * table[:, num_inputs:], axis=1), separator=", ")[1:-1]+"}" # remove [] on the outside
 		for i in range(len(configs))])
 
 	setup  = "\n".join(["""\tpinMode(PIN_{name}, OUTPUT);""".format(name=name) for name in input_names])
