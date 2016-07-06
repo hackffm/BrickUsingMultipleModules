@@ -31,7 +31,8 @@ template_pininput = """
 def main():
 	num_inputs = len(input_names)
 	num_outputs = len(output_names)
-	tables = []
+	tables = np.empty((len(configs), 2**num_inputs, num_inputs+num_outputs,), dtype=np.bool)
+
 	with open(GATE_FILE, "rb") as f:
 		gates_per_config = pickle.load(f)
 	for config_number, config in enumerate(configs):
@@ -47,7 +48,7 @@ def main():
 
 		# generate lookup table
 		table = boolean_table(len(input_names), outputs)
-		tables.append(table)
+		tables[config_number,] = table
 
 		for i in range(num_outputs):
 			print("output {}: {} probability to be True".format(i, np.sum( table[:, num_inputs+i]) / (2**num_inputs) ))
