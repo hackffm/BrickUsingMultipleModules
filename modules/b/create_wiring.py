@@ -31,6 +31,7 @@ def main():
 	num_inputs = len(input_names)
 	num_outputs = len(output_names)
 
+	gates_per_config = []
 	tables = []
 
 	for config_number, config in enumerate(configs):
@@ -75,6 +76,11 @@ def main():
 				gates[:] = rest
 				continue_pruning = True
 
+		gates_per_config.append(gates)
+
+	for config_number, config in enumerate(configs):
+		gates = gates_per_config[config_number]
+		outputs = gates[-len(output_names):]
 		# generate graph output
 		g = pgv.AGraph(directed=True)
 		for gate in gates:
