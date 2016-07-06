@@ -82,12 +82,11 @@ def main():
 		# generate lookup table
 		table = boolean_table(inputs, outputs)
 		tables.append(table)
-		output_table = table[:, len(inputs):]
 
-		output_integers.append(np.sum(np.power(2, np.arange(num_outputs))[None, ::-1] * output_table, axis=1))
+		output_integers.append(np.sum(np.power(2, np.arange(num_outputs))[None, ::-1] * table[:, len(inputs):], axis=1))
 
 		for i in range(num_outputs):
-			print("output {}: {} probability to be True".format(i, np.sum( output_table[:, i]) / (2**num_inputs) ))
+			print("output {}: {} probability to be True".format(i, np.sum( table[:, len(inputs)+i]) / (2**num_inputs) ))
 
 		Gate.all_gates = []
 
