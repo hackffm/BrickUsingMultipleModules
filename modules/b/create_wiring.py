@@ -32,7 +32,6 @@ def main():
 	num_outputs = len(output_names)
 
 	tables = []
-	output_integers = []
 
 	for config_number, config in enumerate(configs):
 		random.seed(config["random_seed"])
@@ -83,8 +82,6 @@ def main():
 		table = boolean_table(inputs, outputs)
 		tables.append(table)
 
-		output_integers.append(np.sum(np.power(2, np.arange(num_outputs))[None, ::-1] * table[:, len(inputs):], axis=1))
-
 		for i in range(num_outputs):
 			print("output {}: {} probability to be True".format(i, np.sum( table[:, len(inputs)+i]) / (2**num_inputs) ))
 
@@ -116,8 +113,8 @@ def main():
 	pininput += "\n\tif(invert_switches(serial_number))\n\t\tinput_value ^= {};\n".format(2**num_outputs-1)
 
 	lookuptable = ",\n".join([
-		"// {}\n{{ ".format(configs[i]["title"])+np.array2string(oi, separator=", ")[1:-1]+"}" # remove [] on the outside
-		for i, oi in enumerate(output_integers)])
+		"// {}\n{{ ".format(configs[i]["title"])+np.array2string(np.sum(np.power(2, np.arange(num_outputs))[None, ::-1] * table[:, len(inputs):], axis=1), separator=", ")[1:-1]+"}" # remove [] on the outside
+		for i in range(len(configs))])
 
 	setup  = "\n".join(["""\tpinMode(PIN_{name}, OUTPUT);""".format(name=name) for name in input_names])
 	setup += "\n\n"
