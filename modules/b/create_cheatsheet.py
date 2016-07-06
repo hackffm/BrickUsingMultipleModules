@@ -1,15 +1,6 @@
-#!/usr/bin/python3
-import sys
-import random
-import pickle
 import numpy as np
 
 from common import *
-
-def get_output(input_values, outputs):
-	return {output.label: output.get_value(input_values) for output in outputs}
-
-
 
 def main():
 	num_inputs = len(input_names)
@@ -36,5 +27,4 @@ def main():
 			f.write("</div>\n")
 		f.write("</body></html>\n")
 
-if __name__ == "__main__":
-	main()
+main()
