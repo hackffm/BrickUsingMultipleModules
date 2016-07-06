@@ -74,6 +74,7 @@ class In(Gate):
 	def func(self):
 		return None
 
+# IMPORTANT: remember to change serialnumber->lookuptable-index in b.ino AND in module_solver.py!
 configs = [
 	{
 		"num_gates":5,
