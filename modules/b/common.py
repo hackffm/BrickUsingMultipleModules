@@ -1,14 +1,5 @@
 import random
 
-functions = {
-	"&": lambda a, b: a and b,
-	"|": lambda a, b: a or b,
-	"=1": lambda a, b: a ^ b,
-	"nor": lambda a, b: not (a or b),
-	"nand": lambda a, b: not (a and b),
-	"out": lambda a, b: False
-}
-
 class Gate(object):
 	running_number = 0
 	all_gates = []
@@ -37,32 +28,37 @@ class Nor(Gate):
 	def __init__(self, in1, in2):
 		Gate.__init__(self)
 		self.fname = "nor"
-		self.func = functions["nor"]
 		self.inputs = [in1, in2]
+
+	def func(self, a, b):
+		return not (a or b)
 
 class Nand(Gate):
 	def __init__(self, in1, in2):
 		Gate.__init__(self)
 		self.fname = "nand"
-		self.func = functions["nand"]
 		self.inputs = [in1, in2]
+	
+	def func(self, a, b):
+		return not (a and b)
 
 class Out(Gate):
 	def __init__(self, label, in1):
 		Gate.__init__(self)
 		self.fname = "out"
-		self.func = lambda x: x
 		self.inputs = [in1]
 
 		self.label = label
 
 		self.node_kwargs["color"] = "green"
+	
+	def func(self, a):
+		return a
 
 class In(Gate):
 	def __init__(self, label):
 		Gate.__init__(self)
 		self.fname = "in"
-		self.func = lambda: None
 		self.inputs = []
 
 		self.label = label
@@ -71,6 +67,9 @@ class In(Gate):
 
 	def get_value(self, inputs):
 		return inputs[self.label]
+	
+	def func(self):
+		return None
 
 configs = [
 	{
