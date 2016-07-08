@@ -7,7 +7,7 @@ import numpy as np
 def describe(serial, randomness):
 	invert_leds = serial[4] in common.led_inverts
 
-	result = ", ".join("{} : {}".format(name, "on" if (((randomness[0] & 1<<i) != 0) != invert_leds) else "off") for i, name in enumerate(common.input_names))
+	result = ", ".join("{} : {}".format(name, "on" if (((randomness & 1<<i) != 0) != invert_leds) else "off") for i, name in enumerate(common.input_names))
 
 	return result
 
@@ -33,7 +33,7 @@ def solution(serial, randomness):
 	else:
 		difficulty_index = 3
 
-	switch_states = table[difficulty_index, randomness[0], len(common.input_names):]
+	switch_states = table[difficulty_index, randomness, len(common.input_names):]
 
 	result = ", ".join("{}: {}".format(name, "down" if switch_states[-i-1] != invert_switches else "up") for i, name in enumerate(common.output_names))
 
@@ -54,6 +54,7 @@ def main():
 		sys.exit("available commands: {}".format(", ".join(commands)))
 	
 	assert len(randomness) == 1
+	randomness = randomness[0] & (2**len(common.input_names)-1)
 
 	print(cmd(serial, randomness))
 
