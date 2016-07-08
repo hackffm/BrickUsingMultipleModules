@@ -30,7 +30,7 @@ with open("manual_figures_autogen.tex", "w") as f:
 		f.write(r"""
 		\begin{{figure}}
 			\begin{{center}}
-			\includegraphics[scale=0.4]{{wires_{i}}}
+			\includegraphics[scale=0.4]{{wires_autogen_{i}}}
 			\caption{{Internal wiring for series {title}}}
 			\end{{center}}
 		\end{{figure}}""".format(i=i, title=config["title"]))

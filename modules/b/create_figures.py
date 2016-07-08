@@ -14,6 +14,6 @@ def main():
 			gate.put_to_graph(g)
 
 		g.layout(prog='dot')
-		g.draw("wires_{}.pdf".format(config_number))
+		g.draw("wires_autogen_{}.pdf".format(config_number))
 
 main()
