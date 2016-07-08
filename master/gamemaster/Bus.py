@@ -139,9 +139,9 @@ class Bus(object):
 
 	## Broadcast the current game state
 	# \param remaining_seconds of the countdown
-	# \param num_failures number of failures occurred so far
-	def broadcast_status(self, remaining_seconds, num_failures):
-		self._write(BROADCAST_ADDRESS + STATUS_BROADCAST + Bus._to_hex(remaining_seconds, 2) + Bus._to_hex(num_failures, 1))
+	# \param num_lifes number of lifes left
+	def broadcast_status(self, remaining_seconds, num_lifes):
+		self._write(BROADCAST_ADDRESS + STATUS_BROADCAST + Bus._to_hex(remaining_seconds, 2) + Bus._to_hex(lifes, 1))
 	
 	## Game finished (bomb exploded or was successfully defused)
 	# \param result 0 if defused, 1 if countdown reached, 2 if too many failures

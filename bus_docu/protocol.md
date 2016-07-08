@@ -52,7 +52,7 @@ Return
 
 Parameter
 * 2 byte: remaining seconds
-* 1 byte: failure counter
+* 1 byte: life counter
 
 ### f: Game end
 

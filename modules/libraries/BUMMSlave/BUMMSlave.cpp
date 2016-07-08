@@ -344,7 +344,7 @@ void BUMMSlave::parseStatusBroadcast()
 {
 	EXPECT_LENGTH(3)
 	currentCountDown = getTwoBufferBytes(0);
-	globalFailureCount = getBufferByte(2);
+	globalLifeCount = getBufferByte(2);
 	onGameStatusUpdate();
 }
 

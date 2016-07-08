@@ -51,7 +51,7 @@ class BUMMSlave
 	public:
 		uint8_t randomSeeds[RANDOM_NUMBER_MAX_SIZE];
 		uint16_t currentCountDown;
-		uint8_t globalFailureCount;
+		uint8_t globalLifeCount;
 		char serialNumber[SERIAL_NUMBER_LENGTH];
 
 		// constructor

@@ -92,17 +92,20 @@ def start(args, bus):
 	next_beep_index = 0
 
 	last_time_left = args.time
-	last_num_failures = 0
+	last_num_lifes = args.max_errors
 
 	while True:
-		num_failures = 0
+		num_lifes = args.max_errors
 		defused = 0
 		for m in used_modules:
 			success, module_failures = bus.poll_status(m)
-			num_failures += module_failures
+			num_lifes -= module_failures
 			if success:
 				defused += 1
-		
+
+		if num_lifes < 0:
+			num_lifes = 0
+
 		# make countdown sounds
 		if ( explosion_time - time.time() ) < sound["beep_end"].get_length():
 			sound["beep_end"].play()
@@ -112,10 +115,10 @@ def start(args, bus):
 
 		time_left = int(explosion_time - time.time())
 
-		if last_time_left != time_left or last_num_failures != num_failures:
-			bus.broadcast_status(time_left, num_failures)
+		if last_time_left != time_left or last_num_lifes != num_lifes:
+			bus.broadcast_status(time_left, num_lifes)
 			last_time_left = time_left
-			last_num_failures = num_failures
+			last_num_lifes = num_lifes
 
 
 		print(time_left)
@@ -124,7 +127,7 @@ def start(args, bus):
 			bus.end_game(1)
 			explode()
 			break
-		if num_failures > args.max_errors:
+		if num_lifes == 0:
 			bus.end_game(2)
 			explode()
 			break
