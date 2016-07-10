@@ -16,7 +16,7 @@ panel: panel_autogen.svg
 
 manual: manual.pdf
 
-manual.pdf: manual_figures manual_figures_autogen.tex manual.tex
+manual.pdf: manual_figures manual_figures_autogen.tex manual.tex layout_autogen.tex
 	pdflatex manual.tex
 	pdflatex manual.tex
 
@@ -43,3 +43,6 @@ lookuptable_autogen.npy: gates_autogen.dat
 
 panel_autogen.svg: common.py ../../parts/laser_config.py ../../parts/top_plate.py
 	python3 create_panel.py
+
+layout_autogen.tex: create_layout.py common.py
+	python3 create_layout.py

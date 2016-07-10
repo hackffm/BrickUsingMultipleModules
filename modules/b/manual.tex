@@ -9,11 +9,23 @@
 
 \title{\moduleTitle}
 \input{../common/manual_preamble}
+\usepackage{tikz}
 \usepackage{array}
 
 \begin{document}
 
 % begin content
+
+\begin{figure}[t]
+	\begin{center}
+		\begin{tikzpicture}[scale=0.03,y=-1cm]
+			\input{layout_autogen}
+		\end{tikzpicture}
+	\end{center}
+	\caption{Panel layout}
+	\label{fig:b_layout}
+\end{figure}
+
 \begin{table}
 	\centering
 	\begin{tabular}{|cm{1cm}m{1cm}|}\hline
