@@ -9,10 +9,22 @@
 
 \title{\moduleTitle}
 \input{../common/manual_preamble}
+\usepackage{array}
 
 \begin{document}
 
 % begin content
+\begin{table}
+	\centering
+	\begin{tabular}{|cm{1cm}m{1cm}|}\hline
+%		Signal & LED & Switch \\\hline
+		TRUE & \includegraphics{../common/cliparts/led_on} & \includegraphics{../common/cliparts/switch_down} \\
+		FALSE & \includegraphics{../common/cliparts/led_off} & \includegraphics{../common/cliparts/switch_up} \\\hline
+	\end{tabular}
+	\caption{Logical states corresponding to input and output elements in default configuration}
+	\label{tab:b_io_logic}
+\end{table}
+
 
 \input{manual_figures_autogen}
 
@@ -24,18 +36,6 @@ Some named signal lines are connected to LEDs, enabling the user to see the curr
 To defuse this module, set all switches so that they have the value of the corresponding signal line, and press RUN.
 
 This module is also available with inverted LED values (choose \ledInversionNumbers ) and inverted switch directions (table \ref{tab:b_switch_inversion}).
-
-
-\begin{table}
-	\centering
-	\begin{tabular}{|ccc|}\hline
-		Signal & LED & Switch \\\hline
-		TRUE & On & down \\
-		FALSE & Off & up \\\hline
-	\end{tabular}
-	\caption{Logical states corresponding to input and output elements in default configuration}
-	\label{tab:b_io_logic}
-\end{table}
 
 \begin{table}
 	\centering
