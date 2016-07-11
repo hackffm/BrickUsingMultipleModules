@@ -16,6 +16,8 @@ with open("layout_autogen.tex","w") as f:
 
 	text_offset = - 6.0
 
+	connector_distance = 6
+
 	h_distance = (100.0 - 2*h_padding)/(num_cols-1)
 	v_distance = (100.0 - 2*v_padding)/(num_rows-1)
 	sq2 = math.sqrt(2)
@@ -28,8 +30,6 @@ with open("layout_autogen.tex","w") as f:
 		x = x_i * h_distance + h_padding
 		y = y_i * v_distance + v_padding
 
-		radius = 3 #laser_config.radius_led5 if name in input_names else laser_config.radius_switch
-
 		if name in output_names:
 			f.write(r"\node ({}) at ({},{}) {{\includegraphics{{../common/cliparts/switch_up}}}};".format(name, x, y))
 		else:
@@ -41,13 +41,13 @@ with open("layout_autogen.tex","w") as f:
 		right_x = top_plate.plate_width + margin
 
 		if x_i == 0:
-			coordinates = ((left_x, y), (x-sq2*radius, y))
+			coordinates = ((left_x, y), (x-connector_distance, y))
 		elif x_i == 1:
-			coordinates = ((left_x, y+0.5*v_distance), (x-0.5*v_distance, y+0.5*v_distance), (x-radius, y+radius) )
+			coordinates = ((left_x, y+0.5*v_distance), (x-0.5*v_distance, y+0.5*v_distance), (x-connector_distance/sq2, y+connector_distance/sq2) )
 		elif x_i == 2:
-			coordinates = ((right_x, y-0.5*v_distance), (x+0.5*v_distance, y-0.5*v_distance), (x+radius, y-radius) )
+			coordinates = ((right_x, y-0.5*v_distance), (x+0.5*v_distance, y-0.5*v_distance), (x+connector_distance/sq2, y-connector_distance/sq2) )
 		elif x_i == 3:
-			coordinates = ((right_x, y), (x+sq2*radius, y))
+			coordinates = ((right_x, y), (x+connector_distance, y))
 		else:
 			coordinates = ()
 		f.write(r"\draw [ultra thin] {};".format( " -- ".join("({},{})".format(*c) for c in coordinates) ))
