@@ -6,9 +6,7 @@ sys.path.append("../../parts")
 import top_plate
 
 with open("layout_autogen.tex","w") as f:
-	names = input_names+output_names
-	random.shuffle(names)
-	names.append("RUN")
+	names = ["SET", "DEL", "RTS", "AUX", "AVM", "XTR", "DRV", "DXF", "VDS", "SRV", "LVL", "RUN"]
 
 	num_cols = 4
 	num_rows = 3
