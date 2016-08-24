@@ -1,7 +1,6 @@
 import serial
 import random
 
-from parse_errorcode_from_cpp import parse_errorcode_from_cpp
 
 BROADCAST_ADDRESS = "_"
 CONTROL_MODULE = "!"
@@ -17,17 +16,32 @@ GAME_END = "f"
 class BusException(RuntimeError):
 	def __init__(self, text):
 		self.text = text
+	def __str__(self):
+		return "BusException: " + self.text
+
+def retryOnBusException(func):
+	def f(*args, **kwargs):
+		while True:
+			try:
+				return func(*args, **kwargs)
+			except BusException as e:
+				print("Caught BusException: {}".format(e))
+				print("retrying...")
+	return f
 
 class Bus(object):
 	##
 	# usage: Bus(serial_device) for a preexisting serial device or Bus(name_of_serial_device, baudrate) to create a new one
-	def __init__(self, device, baudrate=None):
+	def __init__(self, device, baudrate=None, debug=False):
 		if baudrate is None:
 			self.serial = device
 		else:
 			self.serial = serial.Serial(device, baudrate, timeout=0.1)
+		self.debug = debug
 
 	def _write(self, buf):
+		if self.debug:
+			print(">"+buf)
 		self.serial.write(buf+"\n")
 		self.serial.flush()
 
@@ -36,10 +50,19 @@ class Bus(object):
 		if len(result) > 0:
 			if result[-1] == "\n":
 				result = result[:-1]
-			if result[0] != RESPONSE_ADDRESS: # expected return code
-				raise BusException("got response with wrong target ID: '{}' (expected '{}')".format(result[0], RESPONSE_ADDRESS))
+			if len(result) > 0:
+				if result[0] != RESPONSE_ADDRESS: # expected return code
+					raise BusException("got response with wrong target ID: '{}' (expected '{}')".format(result[0], RESPONSE_ADDRESS))
 			result = result[1:]
+		if self.debug:
+			print("<"+result)
 		return result
+
+	## Drain input buffer (read input until none is left)
+	def drain(self):
+		while(True):
+			if len(self.serial.readline()) == 0:
+				break
 
 	def _request(self, buf):
 		self._write(buf)
@@ -75,7 +98,7 @@ class Bus(object):
 
 		expected_len = sum((p[1] for p in parameters))
 		if expected_len*2 != len(value):
-			raise BusException("{} cannot be parsed into {} bytes!".format(value, expected_len))
+			raise BusException("'{}' cannot be parsed into {} bytes!".format(value, expected_len))
 
 		pos = 0
 		result = {}
@@ -99,7 +122,7 @@ class Bus(object):
 	# \param module_id single-character module id
 	# \param enabled boolean value which determines whether this module will take part in this game
 	# \param serial_number 5-char string of bumm serial number
-	# \param num_random number of random bytes
+	# \param num_random number of random bytes or list of 1-byte integers
 	def init_module(self, module_id, enabled, serial_number, num_random):
 		Bus._check_module_id(module_id)
 		assert enabled in [True, False]
@@ -111,8 +134,18 @@ class Bus(object):
 		assert "0" <= serial_number[3] <= "9"
 		assert "A" <= serial_number[4] <= "Z"
 
+		if isinstance(num_random, int):
+			random_number = (random.randrange(0, 256) for i in range(num_random))
+		elif isinstance(num_random, list):
+			for i in num_random:
+				assert isinstance(i, int)
+				assert 0 <= i < 256
+			random_number = num_random
+		else:
+			raise AssertionError("num_random neither of type int or list")
+
 		mode = 1 if enabled else 0
-		random_number = "".join(Bus._to_hex(random.randrange(0, 256),1) for i in range(num_random))
+		random_number = "".join(Bus._to_hex(i, 1) for i in random_number)
 		serial_number_encoded = "".join(Bus._to_hex(ord(s), 1) for s in serial_number)
 
 		self._write(module_id + MODULE_INIT + Bus._to_hex(mode, 1) + serial_number_encoded + random_number)
@@ -125,6 +158,7 @@ class Bus(object):
 	## Poll module status
 	# \param module_id single-character module id
 	# \returns tuple (success (boolean), number of failures)
+	@retryOnBusException
 	def poll_status(self, module_id):
 		Bus._check_module_id(module_id)
 		response = self._request(module_id + STATUS_POLL)
@@ -132,16 +166,14 @@ class Bus(object):
 			("success", 1),
 			("failures", 1)
 			])
-		if result["success"] not in [0,1]:
-			raise Exception("state error in module {}: {}".format(module_id, parse_errorcode_from_cpp("../modules/libraries/BUMMSlave/BUMMSlave.cpp", result["success"])))
 
-		return (result["success"] != 0, result["failures"])
+		return (result["success"], result["failures"])
 
 	## Broadcast the current game state
 	# \param remaining_seconds of the countdown
 	# \param num_lifes number of lifes left
 	def broadcast_status(self, remaining_seconds, num_lifes):
-		self._write(BROADCAST_ADDRESS + STATUS_BROADCAST + Bus._to_hex(remaining_seconds, 2) + Bus._to_hex(lifes, 1))
+		self._write(BROADCAST_ADDRESS + STATUS_BROADCAST + Bus._to_hex(remaining_seconds, 2) + Bus._to_hex(num_lifes, 1))
 	
 	## Game finished (bomb exploded or was successfully defused)
 	# \param result 0 if defused, 1 if countdown reached, 2 if too many failures

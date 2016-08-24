@@ -397,7 +397,9 @@ class Application(ttk.Frame):
 
 
 	def start_new_game(self):
-		self.connection.send_start(self.gather_new_game_dict())
+		game_dict = self.gather_new_game_dict()
+		print(game_dict)
+		self.connection.send_start(game_dict)
 		self.is_running = True
 
 		# describe-display

@@ -1,7 +1,19 @@
 import socket
 import json
+import sys
 
 PORT_NUMBER = 5000
+
+def byteify(val):
+	if isinstance(val, dict):
+		return {byteify(key): byteify(value) for key, value in (val.items() if sys.version_info.major == 3 else val.iteritems())}
+	elif isinstance(val, list):
+		return [byteify(element) for element in val]
+	elif sys.version_info.major == 2 and isinstance(val, unicode):
+		return val.encode('utf-8')
+	else:
+		return val
+
 class Connection(object):
 	## Time to try to establish a new connection
 	CONNECTION_TIMEOUT = 0.1
@@ -18,7 +30,7 @@ class Connection(object):
 		self.targetHostname = targetHostname
 		self.port = PORT_NUMBER
 
-		self._TryConnect()
+		#self._TryConnect()
 	
 	def _CleanupConnections(self):
 		print("disconnect!")
@@ -87,7 +99,7 @@ class Connection(object):
 				if len(buf) == 0: # this will only occur on disconnects. if no data is available, a socket.error will be raised and handled below!
 					self._CleanupConnections()
 					return False
-				self.buffer += buf.decode("utf-8")
+				self.buffer += buf.decode("utf-8") if sys.version_info.major == 3 else buf
 				if len(self.buffer) > 0 and self.buffer[-1] == "\0":
 					return True
 		except socket.error: # no data available
@@ -95,7 +107,7 @@ class Connection(object):
 
 	## Return currently buffered message and clear the buffer
 	def _PopMessage(self):
-		j = json.loads(self.buffer[:-1])
+		j = byteify(json.loads(self.buffer[:-1]))
 		self.buffer = ""
 		print("got message: {}".format(j))
 		return j
@@ -106,8 +118,9 @@ class Connection(object):
 			self._TryConnect()
 		else:
 			j = json.dumps(data)+"\0"
+			print(j)
 			try:
-				self.connection.send(j.encode("utf-8"))
+				self.connection.send(j.encode("utf-8") if sys.version_info.major == 3 else j)
 				print("sent message: {}".format(j))
 			except socket.error:
 				self._CleanupConnections()
