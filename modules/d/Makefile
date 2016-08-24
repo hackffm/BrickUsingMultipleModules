@@ -34,7 +34,10 @@ panel: panel_autogen.svg
 panel_autogen.svg: create_panel.py
 	python3 create_panel.py
 
-manual.pdf: manual.tex manual_description_autogen.tex manual_tables_autogen.tex
+layout_autogen.tex: ../common/layout_generation/layout.py create_layout.py
+	python3 create_layout.py
+
+manual.pdf: manual.tex manual_description_autogen.tex manual_tables_autogen.tex layout_autogen.tex
 	pdflatex manual.tex
 	pdflatex manual.tex
 
