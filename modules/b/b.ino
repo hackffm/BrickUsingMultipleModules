@@ -1,4 +1,5 @@
 #include <BUMMSlave.h>
+#include <debounce.h>
 
 #include "pin_definitions.h"
 #include "autowires.h"
@@ -25,27 +26,20 @@ uint8_t table_number_from_serial_number(char serialNumber[])
 
 void loop()
 {
-	uint8_t was_released = true;
 	bs.loop();
 	if(bs.isArmed())
 	{
-		if(digitalRead(PIN_RUN) == HIGH) // using opener as button!
+		if(get_debounced_flank(PIN_RUN) == HIGH) // using opener as button!
 		{
-			if(was_released)
+			if(input_valid(table_number_from_serial_number(bs.serialNumber), bs.randomSeeds[0], bs.serialNumber))
 			{
-				if(input_valid(table_number_from_serial_number(bs.serialNumber), bs.randomSeeds[0], bs.serialNumber))
-				{
-					bs.disarm();
-				}
-				else
-				{
-					bs.disarmFailed();
-				}
-				was_released = false;
+				bs.disarm();
+			}
+			else
+			{
+				bs.disarmFailed();
 			}
 		}
-		else
-			was_released = true;
 	}
 }
 
