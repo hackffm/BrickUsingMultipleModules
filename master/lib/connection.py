@@ -45,6 +45,7 @@ class Connection(object):
 			# if server is not already running, start it
 			if self.server is None:
 				s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+				s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # avoid port block on server failure
 				print("server mode: waiting for connection...")
 				try:
 					s.bind(("", self.port))
