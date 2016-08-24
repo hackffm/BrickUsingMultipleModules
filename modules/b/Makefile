@@ -1,5 +1,9 @@
 export USER_LIB_PATH=../libraries
 
+export ISP_PROG=avrisp2
+export ISP_PORT=usb
+
+
 #include /usr/share/arduino/Arduino.mk
 
 all: wires_autogen.cpp
