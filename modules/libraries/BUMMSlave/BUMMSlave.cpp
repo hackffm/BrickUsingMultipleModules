@@ -24,7 +24,8 @@
 #define ERROR_GAME_START_WHEN_IN_WRONG_STATE 0x04
 #define ERROR_STATUS_POLL_WHEN_IN_WRONG_STATE 0x05
 #define ERROR_DISARM_WHEN_IN_WRONG_STATE 0x06
-#define ERROR_REARM_WHEN_IN_WRONG_STATE 0x06
+#define ERROR_REARM_WHEN_IN_WRONG_STATE 0x07
+#define ERROR_BAD_COMMAND_CODE 0x08
 
 void onModuleInit();
 void onGameStart();
@@ -235,7 +236,7 @@ void BUMMSlave::parseMessage()
 			BUMMSlave::parseGameEnd();
 			break;
 		default:
-			// error?
+			setErrorStatus(ERROR_BAD_COMMAND_CODE, _receiveBuffer[COMMAND_BYTE]);
 			break;
 	}
 }
@@ -332,10 +333,10 @@ void BUMMSlave::parseStatusPoll()
 	}
 	else
 	{
-		setErrorStatus(ERROR_STATUS_POLL_WHEN_IN_WRONG_STATE);
-		setLEDs();
 		sendHexByte(_errorCode);
 		sendHexByte(_errorCodeMore);
+		setErrorStatus(ERROR_STATUS_POLL_WHEN_IN_WRONG_STATE);
+		setLEDs();
 	}
 	endSerialCommand();
 }
