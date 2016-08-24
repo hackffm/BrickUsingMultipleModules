@@ -3,7 +3,9 @@ import math
 from common import *
 import sys
 sys.path.append("../../parts")
+sys.path.append("../common/layout_generation")
 import top_plate
+import layout
 
 with open("layout_autogen.tex","w") as f:
 	names = ["SET", "DEL", "RTS", "AUX", "AVM", "XTR", "DRV", "DXF", "VDS", "SRV", "LVL", "RUN"]
@@ -14,15 +16,10 @@ with open("layout_autogen.tex","w") as f:
 	h_padding = 15.0
 	v_padding = 30.0
 
-	text_offset = - 6.0
-
-	connector_distance = 6
-
 	h_distance = (100.0 - 2*h_padding)/(num_cols-1)
 	v_distance = (100.0 - 2*v_padding)/(num_rows-1)
-	sq2 = math.sqrt(2)
 
-	f.write(r"\draw [thick] (0,0) -- ({0},0) -- ({0},{1}) -- (0,{1}) -- (0,0);".format(top_plate.plate_width, top_plate.plate_width))
+	f.write(layout.make_plate())
 
 	for i, name in enumerate(names):
 		x_i = i // num_rows
@@ -31,25 +28,9 @@ with open("layout_autogen.tex","w") as f:
 		y = y_i * v_distance + v_padding
 
 		if name in output_names:
-			f.write(r"\node ({}) at ({},{}) {{\includegraphics{{../common/cliparts/switch_up}}}};".format(name, x, y))
+			f.write(layout.make_clipart((x,y), "switch_up"))
 		else:
-			f.write(r"\node ({}) at ({},{}) {{\includegraphics{{../common/cliparts/led_off}}}};".format(name, x, y))
+			f.write(layout.make_clipart((x,y), "led_off"))
 
-		margin = 20
-
-		left_x = 0 - margin
-		right_x = top_plate.plate_width + margin
-
-		if x_i == 0:
-			coordinates = ((left_x, y), (x-connector_distance, y))
-		elif x_i == 1:
-			coordinates = ((left_x, y+0.5*v_distance), (x-0.5*v_distance, y+0.5*v_distance), (x-connector_distance/sq2, y+connector_distance/sq2) )
-		elif x_i == 2:
-			coordinates = ((right_x, y-0.5*v_distance), (x+0.5*v_distance, y-0.5*v_distance), (x+connector_distance/sq2, y-connector_distance/sq2) )
-		elif x_i == 3:
-			coordinates = ((right_x, y), (x+connector_distance, y))
-		else:
-			coordinates = ()
-		f.write(r"\draw [ultra thin] {};".format( " -- ".join("({},{})".format(*c) for c in coordinates) ))
-		f.write(r"\node [{}] at ({},{}) {{{}}};".format("left" if x_i in (0,1) else "right", coordinates[0][0], coordinates[0][1], name))
+		f.write(layout.make_label((x, y), name, "left" if x_i in (0,1) else "right", y-v_distance*{0:0, 1:-0.5, 2:+0.5, 3:0}[x_i]))
 

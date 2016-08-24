@@ -48,5 +48,5 @@ lookuptable_autogen.npy: gates_autogen.dat
 panel_autogen.svg: common.py ../../parts/laser_config.py ../../parts/top_plate.py
 	python3 create_panel.py
 
-layout_autogen.tex: create_layout.py common.py
+layout_autogen.tex: ../common/layout_generation/layout.py create_layout.py common.py
 	python3 create_layout.py
