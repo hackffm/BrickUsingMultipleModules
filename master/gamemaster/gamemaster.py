@@ -183,6 +183,27 @@ class Gamemaster():
 
 			time_left = int(explosion_time - time.time())
 
+			# SOUNDS
+			# make countdown sounds
+			if ( explosion_time - time.time() ) < self.sound["beep_end"].get_length():
+				self.sound["beep_end"].play()
+			elif ( explosion_time - time.time() ) < beeptimes[next_beep_index]:
+				next_beep_index += 1
+				self.sound["beep"].play()
+
+			# BROADCAST STATE
+
+			state["seconds"] = time_left
+
+			if last_time_left != time_left or last_num_lifes != num_lifes:
+				print(time_left)
+				self.bus.broadcast_status(time_left, num_lifes)
+				last_time_left = time_left
+				last_num_lifes = num_lifes
+
+				if self.args.mode == "gui":
+					self.server.send_game_update(state)
+
 			# GAME END CONDITIONS
 			# countdown over?
 			if time_left <= 0:
@@ -217,26 +238,6 @@ class Gamemaster():
 				self.cleanup_after_game()
 				break
 
-			# SOUNDS
-			# make countdown sounds
-			if ( explosion_time - time.time() ) < self.sound["beep_end"].get_length():
-				self.sound["beep_end"].play()
-			elif ( explosion_time - time.time() ) < beeptimes[next_beep_index]:
-				next_beep_index += 1
-				self.sound["beep"].play()
-
-			# BROADCAST STATE
-
-			state["seconds"] = time_left
-
-			if last_time_left != time_left or last_num_lifes != num_lifes:
-				print(time_left)
-				self.bus.broadcast_status(time_left, num_lifes)
-				last_time_left = time_left
-				last_num_lifes = num_lifes
-
-				if self.args.mode == "gui":
-					self.server.send_game_update(state)
 
 def main():
 	main_args = parser.parse_args()
