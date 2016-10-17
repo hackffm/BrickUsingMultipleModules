@@ -16,6 +16,7 @@ BAUDRATE = 19200
 parser = argparse.ArgumentParser(description="BUMM Gamemaster")
 parser.add_argument("serial_device", type=str, help="Serial device used for bus communication")
 parser.add_argument("--disable", metavar="module", type=str, default="", help="Disable (don't use) the specified modules (unseparated list e.g. 'ac')")
+parser.add_argument("--ignore-master-control", action="store_true", help="Don't communicate explicitly with mastercontrol. If connected, game updates may still be displayed because of broadcast.")
 
 subparsers = parser.add_subparsers(title="modes", description="Pick one of the following modes how to control game flow", dest="mode")
 
@@ -63,14 +64,12 @@ class Gamemaster():
 	
 		self.sound = SoundManager({"beep":"beep_short.wav", "beep_end": "beep_end.wav"})
 
-		# check for control panel
-		"""
-		if not args.ignore_control_module:
+		# check for mastercontrol module
+		if not args.ignore_master_module:
 			control_description = self.bus.check_for_module(Bus.CONTROL_MODULE)
 			if control_description is None:
-				raise Exception("no control module found!")
+				raise Exception("no mastercontrol module found!")
 			self.bus.init_module(Bus.CONTROL_MODULE, True, "1000A", control_description["num_random"])
-		"""
 
 		# check other modules
 		self.modules = check_existing_modules(self.bus)
