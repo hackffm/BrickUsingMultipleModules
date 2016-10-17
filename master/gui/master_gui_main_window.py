@@ -333,7 +333,7 @@ class Application(ttk.Frame):
 		for module_id, module_state in d["modules"].items():
 			self.update_module(module_id, module_state)
 		self.current_countdown.set(d["seconds"])
-		self.current_lifes.set( self.lifes_at_start - sum(ms["failures"] for ms in d["modules"].values()) )
+		self.current_lifes.set(d["lifes"])
 		self.disable_widgets_if_necessary()
 	
 	def handle_game_end(self, d):

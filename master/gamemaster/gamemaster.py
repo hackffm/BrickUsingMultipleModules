@@ -194,6 +194,7 @@ class Gamemaster():
 			# BROADCAST STATE
 
 			state["seconds"] = time_left
+			state["lifes"] = num_lifes if num_lifes >= 0 else 0
 
 			if last_time_left != time_left or last_num_lifes != num_lifes:
 				print(time_left)
