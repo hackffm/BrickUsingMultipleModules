@@ -352,7 +352,7 @@ void BUMMSlave::parseStatusBroadcast()
 void BUMMSlave::parseGameEnd()
 {
 	EXPECT_LENGTH(1)
-	uint8_t gameEndStatus = getBufferByte(1); // TODO propagate this variable?
+	uint8_t gameEndStatus = getBufferByte(0);
 	_moduleStatus = MODULE_STATUS_DISABLED;
 	setLEDs();
 	onGameEnd(gameEndStatus);
