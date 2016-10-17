@@ -69,7 +69,7 @@ class Gamemaster():
 			control_description = self.bus.check_for_module(Bus.CONTROL_MODULE)
 			if control_description is None:
 				raise Exception("no control module found!")
-			self.bus.init_module(Bus.CONTROL_MODULE, True, "0000A", control_description["num_random"])
+			self.bus.init_module(Bus.CONTROL_MODULE, True, "1000A", control_description["num_random"])
 		"""
 
 		# check other modules
