@@ -178,5 +178,5 @@ class Bus(object):
 	## Game finished (bomb exploded or was successfully defused)
 	# \param result 0 if defused, 1 if countdown reached, 2 if too many failures
 	def end_game(self, result):
-		assert result in [0,1,2]
+		assert result in [0,1,2,3]
 		self._write(BROADCAST_ADDRESS + GAME_END + Bus._to_hex(result, 1))

@@ -12,6 +12,11 @@
 #define SERIAL_NUMBER_LENGTH 5
 #define RANDOM_NUMBER_MAX_SIZE 16
 
+#define GAME_END_DEFUSED 0
+#define GAME_END_TIME 1
+#define GAME_END_FAILURES 2
+#define GAME_END_ABORT 3
+
 void setSerialOutputDisabled();
 
 class BUMMSlave

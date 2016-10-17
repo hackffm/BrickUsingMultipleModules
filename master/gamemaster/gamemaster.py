@@ -213,7 +213,7 @@ class Gamemaster():
 			if self.should_abort():
 				if self.args.mode == "gui":
 					self.server.send_game_end(reason=3)
-				self.bus.end_game(0)
+				self.bus.end_game(3)
 				self.cleanup_after_game()
 				break
 
