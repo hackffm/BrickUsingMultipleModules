@@ -18,11 +18,11 @@ force: ;
 
 panel: panel_autogen.svg
 
-manual: manual.pdf
+manual: manual_en.pdf
 
-manual.pdf: manual_figures manual_figures_autogen.tex manual.tex layout_autogen.tex
-	pdflatex manual.tex
-	pdflatex manual.tex
+manual_%.pdf: manual_figures manual_figures_autogen.tex manual.tex layout_autogen.tex
+	pdflatex -jobname manual_$* "\input{../common/$*.tex}\input{manual.tex}"
+	pdflatex -jobname manual_$* "\input{../common/$*.tex}\input{manual.tex}"
 
 wires_autogen.cpp: autowires.cpp.in lookuptable_autogen.npy
 	python3 create_lookupcode.py

@@ -19,7 +19,10 @@ with open("manual_figures_autogen.tex", "w") as f:
 			{}
 			\end{{tabular}}
 		\end{{center}}
-		\caption{{List of serial numbers with inverted switch directions (down=FALSE)}}
+		\caption{{
+		\en{{List of serial numbers with inverted switch directions (down=FALSE)}}
+		\de{{Liste der Seriennummern mit invertierten Schaltern (unten=FALSE)}}
+		}}
 		\label{{tab:b_switch_inversion}}
 	\end{{table}}
 	""".format( invert_switches_table ))
@@ -31,7 +34,10 @@ with open("manual_figures_autogen.tex", "w") as f:
 		\begin{{figure}}
 			\begin{{center}}
 			\includegraphics[scale=0.4]{{wires_autogen_{i}}}
-			\caption{{Internal wiring for series {title}}}
+			\caption{{
+			\en{{Internal wiring for series {title}}}
+			\en{{Interne Verdrahtung der Serie {title}}}
+			}}
 			\end{{center}}
 		\end{{figure}}""".format(i=i, title=config["title"]))
 

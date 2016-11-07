@@ -33,14 +33,17 @@
 		TRUE & \includegraphics{../common/cliparts/led_on} & \includegraphics{../common/cliparts/switch_down} \\
 		FALSE & \includegraphics{../common/cliparts/led_off} & \includegraphics{../common/cliparts/switch_up} \\\hline
 	\end{tabular}
-	\caption{Logical states corresponding to input and output elements in default configuration}
+	\caption{
+	\en{Logical states corresponding to input and output elements in default configuration}
+	\de{Logischer status der Eingabe- und Ausgabeelemente}
+	}
 	\label{tab:b_io_logic}
 \end{table}
 
 
 \input{manual_figures_autogen}
 
-
+\en{
 The Gates-module is an accumulation of multiple logical gates connected to other gates and named signal lines.
 Each gate has two inputs (binary gate), which can have values of TRUE or FALSE.
 Each gate drives all outgoing signal lines to the output value according to the inputs and table \ref{tab:b_truthtable}.
@@ -48,6 +51,13 @@ Some named signal lines are connected to LEDs, enabling the user to see the curr
 To defuse this module, set all switches so that they have the value of the corresponding signal line, and press RUN.
 
 This module is also available with inverted LED values (choose \ledInversionNumbers ) and inverted switch directions (table \ref{tab:b_switch_inversion}).
+}
+\de{
+Das ``Gates'' Modul ist eine Ansammlung von logischen Gattern, die untereinander und mit Signalleitungen verbunden sind.
+Jedes Gatter hat zwei Eingabeleitungen, die einen Wert von TRUE (wahr) oder FALSE (falsch) annehmen können, und legt an allen Ausgabeleitungen einen Wert entsprechend Tabelle \ref{tab:b_truthtable} an.
+Manche Signalleitungen sind mit LEDs verbunden, sodass man an deren Status den Wert der Leitung erkennen kann.
+Um dieses Modul zu entschärfen müssen alle Schalter in die Stellung gebracht werden, die dem Wert der gleichbenannten Signalleitung entspricht, gefolgt von einem Druck auf den RUN Knopf.
+}
 
 \begin{table}
 	\centering
@@ -58,7 +68,10 @@ This module is also available with inverted LED values (choose \ledInversionNumb
 		TRUE & FALSE & FALSE & TRUE \\
 		TRUE & TRUE & FALSE & FALSE \\\hline
 	\end{tabular}
-	\caption{Truth table for NAND and NOR gates}
+	\caption{
+	\en{Truth table for NAND and NOR gates for different input values}
+	\de{Wahrheitstabelle für NAND und NOR Gatter für verschiedene Eingabewerte}
+	}
 	\label{tab:b_truthtable}
 \end{table}
 
