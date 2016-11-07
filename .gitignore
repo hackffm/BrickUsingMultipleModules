@@ -6,3 +6,4 @@
 *autogen*
 build-uno
 __pycache__
+*.gcode
