@@ -37,8 +37,8 @@ panel_autogen.svg: create_panel.py
 layout_autogen.tex: ../common/layout_generation/layout.py create_layout.py
 	python3 create_layout.py
 
-manual.pdf: manual.tex manual_description_autogen.tex manual_tables_autogen.tex layout_autogen.tex
-	pdflatex manual.tex
-	pdflatex manual.tex
+manual: manual_en.pdf manual_de.pdf
 
-manual: manual.pdf
+manual_%.pdf: manual.tex manual_description_autogen.tex manual_tables_autogen.tex layout_autogen.tex
+	pdflatex -jobname manual_$* "\input{../common/$*.tex}\input{manual.tex}"
+	pdflatex -jobname manual_$* "\input{../common/$*.tex}\input{manual.tex}"

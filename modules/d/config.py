@@ -56,22 +56,22 @@ V_mode_letters = "AEIOU"
 
 button_modes = {
 	"G": {
-		"description": "press the green button",
+		"description": "\en{press the green button}\de{den grünen Knopf drücken}",
 		"solver": "False",
 		"code": "false"
 	},
 	"R": {
-		"description": "press the red button",
+		"description": "\en{press the red button}\de{den roten Knopf drückem}",
 		"solver": "True",
 		"code": "true"
 	},
 	"E": {
-		"description": "if the module modifier number is even, press the red button, else press the green button",
+		"description": "\en{if the module modifier number is even, press the red button, else press the green button}\de{wenn die Modulseriennummer gerade ist, den roten Knopf drücken, sonst den grünen}",
 		"solver": "(int(serial[3]) % 2 == 0)",
 		"code": """ !((bs.serialNumber[3]-'0') & 1) """
 	},
 	"V": {
-		"description": "if the serial number ends with a {}, press the red button, else press the green button".format(", ".join(V_mode_letters[:-1]) + " or " + V_mode_letters[-1]),
+		"description": "\en{{if the serial number ends with a {0}, press the red button, else press the green button}}\de{{wenn die Seriennummer mit {0} endet, den roten Knopf drücken, sonst den grünen}}".format(", ".join(V_mode_letters[:-1]) + " or " + V_mode_letters[-1]),
 		"solver": "serial[4] in ['{}']".format("','".join(V_mode_letters)),
 		"code": " ( " + " || ".join(" (bs.serialNumber[4] == '{}') ".format(letter) for letter in V_mode_letters) + " ) "
 	}
