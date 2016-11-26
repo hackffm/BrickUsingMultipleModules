@@ -53,7 +53,7 @@ class Out(Gate):
 
 		self.label = label
 
-		self.node_kwargs["color"] = "green"
+#		self.node_kwargs["color"] = "green"
 	
 	def func(self, a):
 		return a
@@ -66,7 +66,7 @@ class In(Gate):
 
 		self.label = label
 
-		self.node_kwargs["color"] = "red"
+#		self.node_kwargs["color"] = "red"
 
 	def get_value(self, inputs):
 		return inputs[self.label]
