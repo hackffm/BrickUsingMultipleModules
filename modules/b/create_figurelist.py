@@ -36,7 +36,7 @@ with open("manual_figures_autogen.tex", "w") as f:
 			\includegraphics[scale=0.4]{{wires_autogen_{i}}}
 			\caption{{
 			\en{{Internal wiring for series {title}}}
-			\en{{Interne Verdrahtung der Serie {title}}}
+			\de{{Interne Verdrahtung der Serie {title}}}
 			}}
 			\end{{center}}
 		\end{{figure}}""".format(i=i, title=config["title"]))
