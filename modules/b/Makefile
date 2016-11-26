@@ -30,8 +30,11 @@ wires_autogen.cpp: autowires.cpp.in lookuptable_autogen.npy
 cheatsheet_autogen.html: lookuptable_autogen.npy
 	python3 create_cheatsheet.py
 
-manual_figures_autogen.tex: common.py
+manual_figures_autogen.tex: common.py create_figurelist.py logic_examples
 	python3 create_figurelist.py
+
+logic_examples: create_logic_examples.py
+	python3 create_logic_examples.py
 
 manual_figures: gates_autogen.dat
 	python3 create_figures.py

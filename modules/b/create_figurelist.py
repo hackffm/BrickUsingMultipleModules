@@ -28,6 +28,22 @@ with open("manual_figures_autogen.tex", "w") as f:
 	""".format( invert_switches_table ))
 
 	f.write(r"\newcommand{{\ledInversionNumbers}}{{{}}}".format(", ".join("xxxx"+l for l in led_inverts[:-1]) + " or xxxx" + led_inverts[-1]))
+	
+	for gate_name in ("nor", "nand"):
+		f.write(r"""
+		\begin{figure}
+		\begin{center}
+		""")
+		for in1, in2 in ((False, False), (False, True), (True, True)):
+			f.write(r"""\includegraphics[width=0.3\textwidth]{{logic_example_autogen_{}_{}_{}}}""".format(gate_name, in1, in2))
+		f.write(r"""
+		\caption{{
+		\en{{Example for all possible {0} combinations}}
+		\de{{Beispiel für alle möglichen Fälle für {0} Gatter}}
+		}}
+		\end{{center}}
+		\end{{figure}}
+		""".format(gate_name))
 
 	for i, config in enumerate(configs):
 		f.write(r"""
