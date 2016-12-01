@@ -14,7 +14,7 @@ class SoundManager(object):
 		if SoundManager.instance is not None:
 			raise Exception("Sound manager is a singleton instance. an instance is already defined!")
 		SoundManager.instance = self
-		pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=64)
+		pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=64)
 		pygame.mixer.set_num_channels(2)
 		pygame.mixer.set_reserved(1) # number of dedicated channels (e.g. music)
 		self.musicChannel = pygame.mixer.Channel(SoundManager.MUSIC_CHANNEL)
