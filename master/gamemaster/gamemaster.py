@@ -65,7 +65,7 @@ class Gamemaster():
 		self.sound = SoundManager({"beep":"beep_short.wav", "beep_end": "beep_end.wav"})
 
 		# check for mastercontrol module
-		if not args.ignore_master_module:
+		if not args.ignore_master_control:
 			control_description = self.bus.check_for_module(Bus.CONTROL_MODULE)
 			if control_description is None:
 				raise Exception("no mastercontrol module found!")
