@@ -1,0 +1,18 @@
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[a4paper]{geometry}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{BUMM user manual}
+\cfoot{}
+
+\renewcommand{\thefigure}{\moduleId.\arabic{figure}} 
+\renewcommand{\thetable}{\moduleId.\arabic{table}} 
+
+\renewcommand{\familydefault}{\ttdefault}
+\DeclareFontFamily{\encodingdefault}{\ttdefault}{\hyphenchar\font=`\-}
+
+\newcommand{\warning}[1]{\paragraph{\en{WARNING}\de{WARNUNG}\chde{WARNEN}} #1}
+
+\usepackage[english,german]{babel}
