@@ -18,3 +18,5 @@ all: serial_display.ino
 
 force: ;
 
+panel_autogen.svg: create_panel.py ../../parts/laser_config.py ../../parts/top_plate.py
+	python3 create_panel.py
