@@ -29,6 +29,7 @@ with open("manual_figures_autogen.tex", "w") as f:
 	""".format( invert_switches_table ))
 
 	f.write(r"\newcommand{{\ledInversionNumbers}}{{{}}}".format(", ".join("xxxx"+l for l in led_inverts[:-1]) + r" \en{or}\de{oder}\chde{oder} xxxx" + led_inverts[-1]))
+	f.write("\n\\clearpage\n\n")
 	
 	for gate_name in ("nor", "nand"):
 		f.write(r"""

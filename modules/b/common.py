@@ -81,28 +81,36 @@ configs = [
 		"stretch_factor":2.5,
 		"title":"10xxx-19xxx",
 		"gate_types":[Nor],
-		"random_seed":0
+		"random_seed":0,
+		"show_root_rule": True,
+		"shuffle_rules_again": False
 	},
 	{
 		"num_gates":25,
 		"stretch_factor":2.5,
 		"title":"20xxx-39xxx",
 		"gate_types":[Nor],
-		"random_seed":3
+		"random_seed":3,
+		"show_root_rule": True,
+		"shuffle_rules_again": False
 	},
 	{
 		"num_gates":40,
 		"stretch_factor":2.0,
 		"title":"40xxx-59xxx",
 		"gate_types":[Nand],
-		"random_seed":1
+		"random_seed":1,
+		"show_root_rule": True,
+		"shuffle_rules_again": True
 	},
 	{
 		"num_gates":70,
 		"stretch_factor":3.5,
 		"title":"60xxx and later",
 		"gate_types":[Nor],
-		"random_seed":17
+		"random_seed":17,
+		"show_root_rule": False,
+		"shuffle_rules_again": True
 	}
 ]
 
