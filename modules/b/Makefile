@@ -18,7 +18,7 @@ force: ;
 
 panel: panel_autogen.svg
 
-manual: manual_en.pdf manual_de.pdf
+manual: manual_en.pdf manual_de.pdf manual_chde.pdf
 
 manual_%.pdf: manual_figures manual_figures_autogen.tex manual.tex layout_autogen.tex
 	pdflatex -jobname manual_$* "\input{../common/$*.tex}\input{manual.tex}"

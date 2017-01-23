@@ -25,5 +25,5 @@ with open("manual_tables_autogen.tex", "w") as f:
 			separator = " \\\\\n" if (i % table_columns) == (table_columns-1) else " & "
 			f.write(string + separator)
 
-		caption = "\en{{Codebook for modules from {0}xxx to {1}xxx}}\de{{Codebuch für Module von {0}xxx bis {1}xxx}}".format(*params["difficulty_interval"])
+		caption = "\en{{Codebook for modules from {0}xxx to {1}xxx}}\de{{Codebuch für Module von {0}xxx bis {1}xxx}}\chde{{Codebuch für {0}xxx bis {1}xxx Modul}}".format(*params["difficulty_interval"])
 		f.write(r"\hline\end{{tabular}}\end{{center}}\caption{{{}}}\end{{table}}".format(caption)+"\n\n")
