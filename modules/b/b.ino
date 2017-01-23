@@ -29,7 +29,7 @@ void loop()
 	bs.loop();
 	if(bs.isArmed())
 	{
-		if(get_debounced_flank(PIN_RUN) == HIGH) // using opener as button!
+		if(get_debounced_flank(PIN_RUN) == LOW) // using closer as button!
 		{
 			if(input_valid(table_number_from_serial_number(bs.serialNumber), bs.randomSeeds[0], bs.serialNumber))
 			{
