@@ -217,6 +217,7 @@ class Gamemaster():
 				if self.args.mode == "gui":
 					self.server.send_game_end(reason=1)
 				self.bus.end_game(1)
+				time.sleep(1)
 				self.explode()
 				break
 
