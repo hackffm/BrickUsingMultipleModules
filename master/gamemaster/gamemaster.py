@@ -62,7 +62,7 @@ class Gamemaster():
 		self.bus = Bus.Bus(args.serial_device, BAUDRATE, debug=True)
 		self.bus.drain()
 	
-		self.sound = SoundManager({"beep":"beep_short.wav", "beep_end": "beep_end.wav"})
+		self.sound = SoundManager({"beep":"beep_short.wav", "beep_end": "beep_end.wav", "error": "error.wav", "defused": "bomb_defused.wav", "explosion": "explosion_02.wav"})
 
 		# check for mastercontrol module
 		if not args.ignore_master_control:
@@ -121,10 +121,12 @@ class Gamemaster():
 			return False
 
 	def explode(self):
+		self.sound["explosion"].play()
 		print("BOOOM!")
 		self.cleanup_after_game()
 
 	def win(self):
+		self.sound["defused"].play()
 		print("BOMB HAS BEEN DEFUSED!")
 		self.cleanup_after_game()
 	
@@ -189,6 +191,10 @@ class Gamemaster():
 			elif ( explosion_time - time.time() ) < beeptimes[next_beep_index]:
 				next_beep_index += 1
 				self.sound["beep"].play()
+
+			if last_num_lifes != num_lifes and num_lifes >= 0:
+				self.sound["error"].play()
+
 
 			# BROADCAST STATE
 
