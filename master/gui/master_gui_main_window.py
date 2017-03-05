@@ -57,6 +57,8 @@ class Application(ttk.Frame):
 
 		self.module_descriptions = hardware_description["modules"]
 
+		self.num_modules.set(len(self.module_descriptions))
+
 		for i, module_id in enumerate(sorted(self.module_descriptions.keys())):
 			self.add_module_line(i+1, module_id, self.module_descriptions[module_id], expected_revisions)
 
