@@ -7,3 +7,5 @@
 build-uno
 __pycache__
 *.gcode
+*.svg
+*.stl
