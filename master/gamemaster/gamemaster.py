@@ -10,6 +10,8 @@ sys.path.append("../lib")
 from server import Server
 from parse_errorcode_from_cpp import parse_errorcode_from_cpp
 
+from webserver import WebServer
+
 BAUDRATE = 19200
 
 # parse arguments
@@ -28,6 +30,9 @@ parser_standalone.add_argument("time", type=int, help="Number of seconds for the
 parser_standalone.add_argument("max_errors", type=int, default=0, help="Maximum errors allowed")
 
 parser_gui = subparsers.add_parser("gui", help="start server and wait for connection")
+
+parser_webgui = subparsers.add_parser("webgui", help="start webserver with gui")
+
 
 
 def linspace(start, stop, step):
@@ -82,13 +87,16 @@ class Gamemaster():
 		if args.mode == "gui":
 			self.server = Server("", self.modules)
 	
+		if args.mode == "webgui":
+			self.server = WebServer(("0.0.0.0", 8080), module_descriptions=self.modules)
+	
 	def get_game_info(self):
 		if self.args.mode == "standalone":
 			print("waiting 5s for game start...")
 			time.sleep(5)
 			return self.get_game_info_standalone()
 
-		elif self.args.mode == "gui":
+		elif self.args.mode in ("gui", "webgui"):
 			# wait for "start" command
 			while(True):
 				if self.server._CheckForMessage():
@@ -111,7 +119,7 @@ class Gamemaster():
 		return (self.args.time, self.args.max_errors, serial_number, module_states)
 
 	def should_abort(self):
-		if self.args.mode == "gui":
+		if self.args.mode in ("gui", "webgui"):
 			if self.server._CheckForMessage():
 				msg = self.server._PopMessage()
 				if "abort" in msg:
@@ -207,14 +215,14 @@ class Gamemaster():
 				last_time_left = time_left
 				last_num_lifes = num_lifes
 
-				if self.args.mode == "gui":
+				if self.args.mode in ("gui", "webgui"):
 					self.server.send_game_update(state)
 
 			# GAME END CONDITIONS
 			# countdown over?
 			if time_left <= 0:
 				print("no time left")
-				if self.args.mode == "gui":
+				if self.args.mode in ("gui", "webgui"):
 					self.server.send_game_end(reason=1)
 				self.bus.end_game(1)
 				time.sleep(1)
@@ -224,7 +232,7 @@ class Gamemaster():
 			# too many failures?
 			if num_lifes < 0:
 				print("too many failures!")
-				if self.args.mode == "gui":
+				if self.args.mode in ("gui", "webgui"):
 					self.server.send_game_end(reason=2)
 				self.bus.end_game(2)
 				self.explode()
@@ -232,14 +240,14 @@ class Gamemaster():
 
 			# defused?
 			if defused == num_active_modules:
-				if self.args.mode == "gui":
+				if self.args.mode in ("gui", "webgui"):
 					self.server.send_game_end(reason=0)
 				self.bus.end_game(0)
 				self.win()
 				break
 
 			if self.should_abort():
-				if self.args.mode == "gui":
+				if self.args.mode in ("gui", "webgui"):
 					self.server.send_game_end(reason=3)
 				self.bus.end_game(3)
 				self.cleanup_after_game()

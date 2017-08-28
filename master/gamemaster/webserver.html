@@ -1,0 +1,44 @@
+<html>
+<head>
+	<title>BUMM remote control</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--<meta http-equiv="refresh" content="5">-->
+	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+</head>
+<body data-role="page">
+	<div data-role="header">BUMM remote control</div>
+	<div data-role="main" class="ui-content">
+		<div class="ui-grid-b">
+			<div class="ui-block-a"><input type="text" name="seconds" value="{countdown}" disabled="disabled"/></div>
+			<div class="ui-block-b"><input type="text" name="lifes" value="{lifes}" disabled="disabled"/></div>
+		</div>
+
+		<form method="post">
+			<div class="ui-grid-b">
+				<div class="ui-block-a"><a href="#" onclick="location.reload();" class="ui-btn ui-icon-refresh ui-shadow ui-corner-all ui-btn-icon-left">refresh</a></div>
+				<div class="ui-block-b"><input type="submit" name="btn" value="start"/></div>
+				<div class="ui-block-b"><input type="submit" name="btn" value="abort"/></div>
+			</div>
+			<table>
+				<tr>
+				</tr><tr>
+					<td>Countdown</td>
+					<td><input type="text" name="new_countdown" value="300"/></td>
+				</tr><tr>
+					<td>Max errors</td>
+					<td><input type="text" name="new_maxerrors" value="1"/></td>
+				</tr><tr>
+					<td>Serial number</td>
+					<td><input type="text" name="serial" value="1000A"/></td>
+				</tr>
+			</table>
+			<table data-role="table" class="ui-responsive">
+				<thead><tr><td>ID</td><td>REV</td><td>enable</td><td>state</td><td>failures</td></tr></thead>
+				{module_list}
+			</table>
+		</form>
+	</div>
+</body>
+</html>
