@@ -42,7 +42,9 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 			d["module_list"] += module_template.format(name=mname, rev=m["revision"], checked=checked, state=st, fail=fail)
 
 		with open("webserver.html", "r") as f:
-			self.wfile.write(f.read())
+			self.wfile.write(f.read() % 
+				(", ".join('"{}"'.format(m) for m in self.server.module_descriptions))
+				)
 
 	def do_GET(self):
 		self.make_headers()

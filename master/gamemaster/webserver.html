@@ -9,7 +9,7 @@
 
 <script>
 
-var modules = ["b", "d"];
+var modules = [%s];
 var state_html = {
 	0: '<span class="ui-btn ui-corner-all ui-icon-alert ui-btn-icon-notext">armed</span>',
 	1: '<span class="ui-btn ui-corner-all ui-icon-check ui-btn-icon-notext">defused</span>',
@@ -18,7 +18,6 @@ var state_html = {
 
 function refresh_state()
 {
-	//alert("refreshing");
 	$.ajax({ 
 		type: 'GET',
 		url: '/status',
@@ -81,7 +80,16 @@ $("#abort").click(function(){
 	});
 });
 
-//$("#refresh").click(refresh_state);
+for(i in modules)
+{
+	m = modules[i];
+	$("#module_list").append('<span class="ui-block-a">'+m+'</span>').trigger("create");
+	var flipdiv = $("#module_list").append('<div class="ui-block-b"><input type="checkbox" id="enable_'+m+'" data-role="flipswitch"/></div>').trigger("create");
+	$("#module_list").append('<span id="state_'+m+'" class="ui-block-c"></span>').trigger("create");
+	$("#module_list").append('<span id="fail_'+m+'" class="ui-block-d"></span>').trigger("create");
+}
+
+
 
 setInterval(refresh_state, 1000);
 
@@ -98,22 +106,11 @@ setInterval(refresh_state, 1000);
 			<div class="ui-block-c"><a href="#" class="ui-btn ui-shadow ui-corner-all" id="abort">abort</a></div>
 		</div>
 
-		<div class="ui-grid-c">
+		<div class="ui-grid-c" id="module_list">
 			<span class="ui-block-a">ID</span>
 			<span class="ui-block-b">enable</span>
 			<span class="ui-block-c">state</span>
 			<span class="ui-block-d">failures</span>
-
-			
-			<span class="ui-block-a">b</span>
-			<div class="ui-block-b"><input type="checkbox" id="enable_b" data-role="flipswitch"/></div>
-			<span id="state_b" class="ui-block-c"></span>
-			<span id="fail_b" class="ui-block-d"></span>
-			
-			<span class="ui-block-a">d</span>
-			<div class="ui-block-b"><input type="checkbox" id="enable_d" data-role="flipswitch"/></div>
-			<span id="state_d" class="ui-block-c"></span>
-			<span id="fail_d" class="ui-block-d"></span>
 		</div>
 
 		<label for="new_seconds">Countdown</label>
