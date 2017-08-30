@@ -4,17 +4,19 @@ import logging
 import cgi
 import random
 import sys
+import json
 
 PORT = 8080
 
 game_instance = None
 
 class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
-	def serve_main_page(self, post):
+	def make_headers(self):
 		self.send_response(200)
 		self.send_header('Content-type', 'text/html')
 		self.end_headers()
 
+	def serve_main_page(self, post):
 
 		state = self.server.state
 		md = self.server.module_descriptions
@@ -40,21 +42,61 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 			d["module_list"] += module_template.format(name=mname, rev=m["revision"], checked=checked, state=st, fail=fail)
 
 		with open("webserver.html", "r") as f:
-			self.wfile.write(f.read().format(**d))
+			self.wfile.write(f.read())
 
 	def do_GET(self):
-		self.serve_main_page({})
+		self.make_headers()
+		if self.path == "/status":
+			state = self.server.state
+			if state is None:
+				result = {"seconds": -1, "lifes": -1}
+				result["modules"] = {m: {"failures": 0, "state": 5} for m in self.server.module_descriptions}
+			else:
+				result = {
+					"seconds": state["seconds"],
+					"lifes": state["lifes"],
+				}
+				result["modules"] = {m: {"failures": state["modules"][m]["failures"], "state": state["modules"][m]["state"]} for m in self.server.module_descriptions}
+			self.wfile.write(json.dumps(result))
+		else:
+			self.serve_main_page({})
 
 	def do_POST(self):
+		self.make_headers()
 		form = cgi.FieldStorage(
 			fp=self.rfile,
 			headers=self.headers,
 			environ={'REQUEST_METHOD':'POST',
 				'CONTENT_TYPE':self.headers['Content-Type'],
 				})
-		d = {item.name: item.value for item in form.list}
-		self.handle_post(d)
-		self.serve_main_page(d)
+		params = {item.name: item.value for item in form.list}
+
+		try:
+			handler = {
+				"/start": self.handle_start,
+				"/abort": self.handle_abort,
+			}[self.path]
+		except KeyError:
+			print("unknown path: {}".format(self.path))
+			return
+
+		handler(params)
+
+		#self.serve_main_page(d)
+	
+	def handle_start(self, params):
+		md = self.server.module_descriptions
+		self.server.last_message = {"start":{
+			"seconds": int(params["seconds"]),
+			"maxerrors": int(params["maxerrors"]),
+			"serial": params["serial"],
+			"modules": {m: {"enabled": ("enable_"+m) in params and params["enable_"+m]=="on", "random":[random.randrange(0,256) for i in range(md[m]["num_random"])]} for m in md}
+		}}
+		self.wfile.write("")
+	
+	def handle_abort(self, params):
+		self.server.last_message = {"abort": {}}
+
 	
 	def handle_post(self, d):
 		for name, value in d.iteritems():
@@ -106,7 +148,7 @@ class WebServer(SocketServer.TCPServer):
 		return self.last_message is not None
 
 if __name__ == "__main__":
-	httpd = WebServer(("", PORT), ServerHandler)
+	httpd = WebServer(("0.0.0.0", PORT), ServerHandler)
 	httpd.state = {"countdown": "0", "lives": "1"}
 
 	while True:

@@ -1,44 +1,132 @@
 <html>
 <head>
-	<title>BUMM remote control</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!--<meta http-equiv="refresh" content="5">-->
-	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
-	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<title>BUMM remote control</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--<meta http-equiv="refresh" content="5">-->
+<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+<script>
+
+var modules = ["b", "d"];
+var state_html = {
+	0: '<span class="ui-btn ui-corner-all ui-icon-alert ui-btn-icon-notext">armed</span>',
+	1: '<span class="ui-btn ui-corner-all ui-icon-check ui-btn-icon-notext">defused</span>',
+	5: "disabled",
+};
+
+function refresh_state()
+{
+	//alert("refreshing");
+	$.ajax({ 
+		type: 'GET',
+		url: '/status',
+		data: {},
+		dataType: "json",
+		success: function (result) {
+			for(i in modules)
+			{
+				var m = modules[i];
+				$("#state_"+m).html(state_html[result["modules"][m]["state"]]);
+				$("#fail_"+m).html(result["modules"][m]["failures"]);
+			}
+
+			if(result["seconds"] == -1) // nothing running
+			{
+				$("#countdown").text("--");
+				$("#lifes").text("--");
+				$("#abort").hide();
+				$("#start").show();
+			}
+			else
+			{
+				$("#countdown").text(result["seconds"]);
+				$("#lifes").text(result["lifes"]);
+				$("#abort").show();
+				$("#start").hide();
+			}
+		}
+	});
+}
+
+$(document).ready(function(){
+
+$("#start").click(function(){
+	var post_data = 
+	{
+		"seconds": $("#seconds").val(),
+		"maxerrors": $("#maxerrors").val(),
+		"serial": $("#serial").val(),
+	};
+	for(i in modules)
+	{
+		if($("#enable_"+modules[i])[0].checked)
+		{
+			post_data["enable_"+modules[i]] = "on";
+		}
+	}
+        $.post("/start", post_data,
+	function(data, status)
+	{
+		if(status != "success")
+			alert("unable to start");
+		refresh_state();
+	});
+});
+
+$("#abort").click(function(){
+	$.post("/abort", {"abort":""}, function(data, status){
+		refresh_state();
+	});
+});
+
+//$("#refresh").click(refresh_state);
+
+setInterval(refresh_state, 1000);
+
+});
+
+</script>
 </head>
 <body data-role="page">
 	<div data-role="header">BUMM remote control</div>
 	<div data-role="main" class="ui-content">
 		<div class="ui-grid-b">
-			<div class="ui-block-a"><input type="text" name="seconds" value="{countdown}" disabled="disabled"/></div>
-			<div class="ui-block-b"><input type="text" name="lifes" value="{lifes}" disabled="disabled"/></div>
+			<div class="ui-block-a" id="countdown" style="color:red;font-family:monospace;font-size:5em;text-align:center;"></div>
+			<div class="ui-block-b" id="lifes" style="color:green;font-family:monospace;font-size:5em;text-align:center;"></div>
+			<div class="ui-block-c"><a href="#" class="ui-btn ui-shadow ui-corner-all" id="abort">abort</a></div>
 		</div>
 
-		<form method="post">
-			<div class="ui-grid-b">
-				<div class="ui-block-a"><a href="#" onclick="location.reload();" class="ui-btn ui-icon-refresh ui-shadow ui-corner-all ui-btn-icon-left">refresh</a></div>
-				<div class="ui-block-b"><input type="submit" name="btn" value="start"/></div>
-				<div class="ui-block-b"><input type="submit" name="btn" value="abort"/></div>
-			</div>
-			<table>
-				<tr>
-				</tr><tr>
-					<td>Countdown</td>
-					<td><input type="text" name="new_countdown" value="300"/></td>
-				</tr><tr>
-					<td>Max errors</td>
-					<td><input type="text" name="new_maxerrors" value="1"/></td>
-				</tr><tr>
-					<td>Serial number</td>
-					<td><input type="text" name="serial" value="1000A"/></td>
-				</tr>
-			</table>
-			<table data-role="table" class="ui-responsive">
-				<thead><tr><td>ID</td><td>REV</td><td>enable</td><td>state</td><td>failures</td></tr></thead>
-				{module_list}
-			</table>
-		</form>
+		<div class="ui-grid-c">
+			<span class="ui-block-a">ID</span>
+			<span class="ui-block-b">enable</span>
+			<span class="ui-block-c">state</span>
+			<span class="ui-block-d">failures</span>
+
+			
+			<span class="ui-block-a">b</span>
+			<div class="ui-block-b"><input type="checkbox" id="enable_b" data-role="flipswitch"/></div>
+			<span id="state_b" class="ui-block-c"></span>
+			<span id="fail_b" class="ui-block-d"></span>
+			
+			<span class="ui-block-a">d</span>
+			<div class="ui-block-b"><input type="checkbox" id="enable_d" data-role="flipswitch"/></div>
+			<span id="state_d" class="ui-block-c"></span>
+			<span id="fail_d" class="ui-block-d"></span>
+		</div>
+
+		<label for="new_seconds">Countdown</label>
+		<input type="text" name="new_seconds" id="seconds" value="300"/>
+
+		<label for="new_maxerrors">Max errors</label>
+		<input type="text" name="new_maxerrors" id="maxerrors" value="1"/>
+
+		<label for="serial">Serial number</label>
+		<input type="text" name="serial" id="serial" value="1000A"/>
+
+		<a href="#" class="ui-btn ui-shadow ui-corner-all" id="start">start</a>
+
 	</div>
 </body>
 </html>
