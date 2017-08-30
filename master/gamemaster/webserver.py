@@ -17,30 +17,6 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		self.end_headers()
 
 	def serve_main_page(self, post):
-
-		state = self.server.state
-		md = self.server.module_descriptions
-
-		print(state)
-		if state is None:
-			d = {"countdown": "--", "lifes": "--"}
-		else:
-			d = {"countdown": state["seconds"], "lifes": state["lifes"]}
-			#{'seconds': 297, 'lifes': 1, 'modules': {'b': {'failures': 0, 'state': 0}, 'd': {'failures': 0, 'state': 5}}}
-		
-		module_template = """<tr><td>{name}</td><td>{rev}</td><td><input type="checkbox" name="enable_{name}"{checked}/></td><td>{state}</td><td>{fail}</td></tr>\n"""
-		d["module_list"] = ""
-		for mname, m in md.iteritems():
-			checked = """ checked="checked" """ if "enable_"+mname in post else ""
-			if state is None:
-				st = ""
-				fail = "-"
-			else:
-				style = "check" if state["modules"][mname]["state"] == 1 else "alert"
-				st = """<a href="#" class="ui-btn ui-corner-all ui-icon-{} ui-btn-icon-notext">Action Icon</a>""".format(style)
-				fail = state["modules"][mname]["failures"]
-			d["module_list"] += module_template.format(name=mname, rev=m["revision"], checked=checked, state=st, fail=fail)
-
 		with open("webserver.html", "r") as f:
 			self.wfile.write(f.read() % 
 				(", ".join('"{}"'.format(m) for m in self.server.module_descriptions))
