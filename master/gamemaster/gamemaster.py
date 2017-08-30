@@ -19,6 +19,7 @@ parser = argparse.ArgumentParser(description="BUMM Gamemaster")
 parser.add_argument("serial_device", type=str, help="Serial device used for bus communication")
 parser.add_argument("--disable", metavar="module", type=str, default="", help="Disable (don't use) the specified modules (unseparated list e.g. 'ac')")
 parser.add_argument("--ignore-master-control", action="store_true", help="Don't communicate explicitly with mastercontrol. If connected, game updates may still be displayed because of broadcast.")
+parser.add_argument("--bus-debug", action="store_true", help="print bus communication")
 
 subparsers = parser.add_subparsers(title="modes", description="Pick one of the following modes how to control game flow", dest="mode")
 
@@ -64,7 +65,7 @@ class Gamemaster():
 	def __init__(self, args):
 		self.args = args
 
-		self.bus = Bus.Bus(args.serial_device, BAUDRATE, debug=True)
+		self.bus = Bus.Bus(args.serial_device, BAUDRATE, debug=args.bus_debug)
 		self.bus.drain()
 	
 		self.sound = SoundManager({"beep":"beep_short.wav", "beep_end": "beep_end.wav", "error": "error.wav", "defused": "bomb_defused.wav", "explosion": "explosion_02.wav"})
