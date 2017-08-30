@@ -83,7 +83,7 @@ for(i in modules)
 {
 	m = modules[i];
 	$("#module_list").append('<span class="ui-block-a">'+m+'</span>').trigger("create");
-	var flipdiv = $("#module_list").append('<div class="ui-block-b"><input type="checkbox" id="enable_'+m+'" data-role="flipswitch"/></div>').trigger("create");
+	var flipdiv = $("#module_list").append('<div class="ui-block-b"><input type="checkbox" id="enable_'+m+'" data-role="flipswitch" data-mini="true"/></div>').trigger("create");
 	$("#module_list").append('<span id="state_'+m+'" class="ui-block-c"></span>').trigger("create");
 	$("#module_list").append('<span id="fail_'+m+'" class="ui-block-d"></span>').trigger("create");
 }
