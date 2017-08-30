@@ -108,7 +108,7 @@ class WebServer(SocketServer.TCPServer):
 		self.module_descriptions = module_descriptions
 		self.state = None
 		self.last_message = None
-		self.timeout = 0.1
+		self.timeout = 0.01
 
 	def send_game_update(self, state):
 		self.state = state
